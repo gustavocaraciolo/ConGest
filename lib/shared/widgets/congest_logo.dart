@@ -6,29 +6,45 @@ class CongestLogo extends StatelessWidget {
   final Color color;
   final double iconSize;
   final double fontSize;
+  final Axis axis;
 
   const CongestLogo({
     super.key,
     this.color = AppColors.white,
     this.iconSize = 72,
     this.fontSize = 32,
+    this.axis = Axis.vertical,
   });
 
   @override
   Widget build(BuildContext context) {
+    final icon = _CongestIcon(size: iconSize, color: color);
+    final text = Text(
+      'ConGest',
+      style: GoogleFonts.inter(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w600,
+        color: color,
+      ),
+    );
+
+    if (axis == Axis.horizontal) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          icon,
+          const SizedBox(width: 12),
+          text,
+        ],
+      );
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _CongestIcon(size: iconSize, color: color),
+        icon,
         const SizedBox(height: 12),
-        Text(
-          'ConGest',
-          style: GoogleFonts.inter(
-            fontSize: fontSize,
-            fontWeight: FontWeight.w600,
-            color: color,
-          ),
-        ),
+        text,
       ],
     );
   }

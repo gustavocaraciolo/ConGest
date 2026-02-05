@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
 import '../../shared/widgets/congest_logo.dart';
-import '../auth/sign_in_screen.dart';
+import '../auth/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,14 +23,14 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(seconds: 1),
     )..repeat();
 
-    _navigateToSignIn();
+    _navigateToLogin();
   }
 
-  Future<void> _navigateToSignIn() async {
+  Future<void> _navigateToLogin() async {
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const SignInScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     }
   }
@@ -69,29 +69,30 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
             ),
-            // Conteúdo central
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CongestLogo(
-                    color: AppColors.white,
-                    iconSize: 72,
-                    fontSize: 32,
-                  ),
-                  const SizedBox(height: 48),
-                  // Loading spinner com conic gradient
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return Transform.rotate(
-                        angle: _controller.value * 2 * math.pi,
-                        child: child,
-                      );
-                    },
-                    child: const _ConicGradientSpinner(),
-                  ),
-                ],
+            // Logo central
+            const Center(
+              child: CongestLogo(
+                color: AppColors.white,
+                iconSize: 72,
+                fontSize: 32,
+              ),
+            ),
+            // Loading spinner posicionado embaixo
+            Positioned(
+              bottom: 120,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _controller.value * 2 * math.pi,
+                      child: child,
+                    );
+                  },
+                  child: const _ConicGradientSpinner(),
+                ),
               ),
             ),
             // Home indicator
