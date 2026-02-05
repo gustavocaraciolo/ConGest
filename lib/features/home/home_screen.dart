@@ -1,286 +1,300 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
-import '../../shared/widgets/home_icons.dart';
-import '../profile/profile_screen.dart';
-import 'widgets/balance_card.dart';
-import 'widgets/condominium_selector.dart';
-import 'widgets/home_bottom_nav.dart';
-import 'widgets/service_item.dart';
-import 'widgets/transaction_item.dart';
+import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/thin_icons.dart';
+import '../../shared/widgets/feature_card.dart';
+import '../invoices/invoices_screen.dart';
+import '../finances/finances_screen.dart';
+import '../reservations/reservations_screen.dart';
+import '../announcements/announcements_screen.dart';
+import '../visitors/visitor_qr_screen.dart';
+import '../visitors/validate_qr_screen.dart';
+import '../parcels/parcels_screen.dart';
+import '../incidents/incidents_screen.dart';
+import '../contacts/contacts_screen.dart';
+import '../polls/polls_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentNavIndex = 0;
-
-  final List<Condominium> _condominiums = const [
-    Condominium(id: '1', name: 'Edifício Aurora', unit: 'Apartamento 101'),
-    Condominium(id: '2', name: 'Residencial Sol Nascente', unit: 'Apartamento 302'),
-    Condominium(id: '3', name: 'Condomínio Jardins', unit: 'Casa 15'),
-  ];
-
-  late Condominium _selectedCondominium;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedCondominium = _condominiums.first;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      body: _currentNavIndex == 3
-          ? const ProfileScreen()
-          : SafeArea(
-              bottom: false,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
+      backgroundColor: AppColors.surface,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // Header
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+                child: Row(
+                  children: [
+                    Expanded(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildNavbar(),
-                          _buildBalanceSection(),
-                          _buildServicesSection(),
-                          _buildTransactionsSection(),
-                          const SizedBox(height: 100),
+                          Text(
+                            'Olá, Morador',
+                            style: AppTextStyles.headingSmall(),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Bloco A • Apt 302',
+                            style: AppTextStyles.subtitle(),
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-      bottomNavigationBar: HomeBottomNav(
-        currentIndex: _currentNavIndex,
-        onTap: (index) {
-          setState(() {
-            _currentNavIndex = index;
-          });
-        },
-        onScanTap: () {
-          // Handle QR Code scan
-        },
-        profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
-      ),
-    );
-  }
-
-  Widget _buildNavbar() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-      color: AppColors.sectionBackground,
-      child: Row(
-        children: [
-          Expanded(
-            child: CondominiumSelector(
-              selectedCondominium: _selectedCondominium,
-              condominiums: _condominiums,
-              onChanged: (condo) => setState(() => _selectedCondominium = condo),
-            ),
-          ),
-          Stack(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(80),
-                ),
-                child: const Center(
-                  child: NotificationBellIcon(
-                    size: 24,
-                    color: AppColors.cardDark,
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 9,
-                top: 13,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.error,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBalanceSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      color: AppColors.sectionBackground,
-      child: BalanceCard(
-        balance: '45.000 Kz',
-        onAddMoney: () {
-          // Handle pay now
-        },
-      ),
-    );
-  }
-
-  Widget _buildServicesSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ServiceItem(
-                leadingWidget: const PaymentServiceIcon(),
-                label: 'Pagamentos',
-                onTap: () {},
-              ),
-              ServiceItem(
-                leadingWidget: const ReservationServiceIcon(),
-                label: 'Reservas',
-                onTap: () {},
-              ),
-              ServiceItem(
-                leadingWidget: const IncidentServiceIcon(),
-                label: 'Ocorrências',
-                onTap: () {},
-              ),
-              ServiceItem(
-                leadingWidget: const AnnouncementServiceIcon(),
-                label: 'Comunicados',
-                onTap: () {},
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ServiceItem(
-                leadingWidget: const InvoiceServiceIcon(),
-                label: 'Facturas',
-                onTap: () {},
-              ),
-              ServiceItem(
-                leadingWidget: const DocumentServiceIcon(),
-                label: 'Documentos',
-                onTap: () {},
-              ),
-              ServiceItem(
-                leadingWidget: const ContactServiceIcon(),
-                label: 'Contactos',
-                onTap: () {},
-              ),
-              ServiceItem(
-                leadingWidget: const MoreServiceIcon(),
-                label: 'Mais',
-                onTap: () {},
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTransactionsSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Movimentos',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  height: 1.19,
-                  letterSpacing: -0.01 * 16,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // Handle view all
-                },
-                child: Row(
-                  children: const [
-                    Text(
-                      'Ver todos',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        height: 1.34,
-                        color: AppColors.primary,
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                    ),
-                    SizedBox(width: 4),
-                    ChevronRightIcon(
-                      size: 16,
-                      color: AppColors.primary,
+                      child: Center(
+                        child: ThinIcon(
+                          painter: ProfileIconPainter(
+                            color: AppColors.primary,
+                          ),
+                          size: 22,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          TransactionItem(
-            title: 'Quota Mensal',
-            subtitle: 'Janeiro 2025',
-            amount: '25.000 Kz',
-            time: '05/01',
-            isPositive: false,
-            iconBackgroundColor: const Color(0xFFEFF6FF),
-            leadingIcon: const HomeTransactionIcon(
-              size: 18,
-              color: AppColors.navyBlue,
             ),
-          ),
-          const SizedBox(height: 10),
-          TransactionItem(
-            title: 'Reserva Salão',
-            subtitle: 'Confirmada',
-            amount: '15.000 Kz',
-            time: '02/01',
-            isPositive: false,
-            iconBackgroundColor: const Color(0xFFFFF7ED),
-            leadingIcon: const EventTransactionIcon(
-              size: 18,
-              color: Color(0xFFEA580C),
+
+            // Balance summary card
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primary,
+                        Color(0xFF0055CC),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Saldo do mês',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.white.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '85.000 Kz',
+                        style: GoogleFonts.inter(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          _BalanceInfo(
+                            label: 'Pago',
+                            value: '65.000 Kz',
+                            icon: Icons.arrow_upward_rounded,
+                            iconColor: AppColors.success,
+                          ),
+                          const SizedBox(width: 24),
+                          _BalanceInfo(
+                            label: 'Pendente',
+                            value: '20.000 Kz',
+                            icon: Icons.arrow_downward_rounded,
+                            iconColor: AppColors.warning,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          TransactionItem(
-            title: 'Crédito Conta',
-            subtitle: 'Transferência',
-            amount: '100.000 Kz',
-            time: '28/12',
-            isPositive: true,
-            iconBackgroundColor: const Color(0xFFECFDF5),
-            leadingIcon: const ArrowDownIcon(
-              size: 18,
-              color: Color(0xFF10B981),
+
+            // Section title
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
+                child: Text(
+                  'Serviços',
+                  style: AppTextStyles.title(),
+                ),
+              ),
             ),
-          ),
-        ],
+
+            // Feature grid
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 1.2,
+                ),
+                delegate: SliverChildListDelegate([
+                  FeatureCard(
+                    title: 'Facturas',
+                    iconPainter: InvoiceIconPainter(color: AppColors.primary),
+                    accentColor: AppColors.primary,
+                    onTap: () => _navigate(context, const InvoicesScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'Movimentos',
+                    iconPainter: FinanceIconPainter(color: AppColors.accentTeal),
+                    accentColor: AppColors.accentTeal,
+                    onTap: () => _navigate(context, const FinancesScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'Reservas',
+                    iconPainter: ReservationIconPainter(
+                      color: AppColors.accentPurple,
+                    ),
+                    accentColor: AppColors.accentPurple,
+                    onTap: () => _navigate(context, const ReservationsScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'Comunicados',
+                    iconPainter: AnnouncementIconPainter(
+                      color: AppColors.accentOrange,
+                    ),
+                    accentColor: AppColors.accentOrange,
+                    badge: '3',
+                    onTap: () =>
+                        _navigate(context, const AnnouncementsScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'QR Visitante',
+                    iconPainter: QrCodeIconPainter(
+                      color: AppColors.accentIndigo,
+                    ),
+                    accentColor: AppColors.accentIndigo,
+                    onTap: () => _navigate(context, const VisitorQrScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'Validar QR',
+                    iconPainter: QrScanIconPainter(
+                      color: AppColors.accentPink,
+                    ),
+                    accentColor: AppColors.accentPink,
+                    onTap: () => _navigate(context, const ValidateQrScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'Encomendas',
+                    iconPainter: ParcelIconPainter(
+                      color: AppColors.accentAmber,
+                    ),
+                    accentColor: AppColors.accentAmber,
+                    badge: '2',
+                    onTap: () => _navigate(context, const ParcelsScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'Ocorrências',
+                    iconPainter: IncidentIconPainter(color: AppColors.error),
+                    accentColor: AppColors.error,
+                    onTap: () => _navigate(context, const IncidentsScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'Contactos',
+                    iconPainter: ContactsIconPainter(
+                      color: AppColors.accentTeal,
+                    ),
+                    accentColor: AppColors.accentTeal,
+                    onTap: () => _navigate(context, const ContactsScreen()),
+                  ),
+                  FeatureCard(
+                    title: 'Votações',
+                    iconPainter: PollIconPainter(color: AppColors.accentPurple),
+                    accentColor: AppColors.accentPurple,
+                    onTap: () => _navigate(context, const PollsScreen()),
+                  ),
+                ]),
+              ),
+            ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  void _navigate(BuildContext context, Widget screen) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => screen),
+    );
+  }
+}
+
+class _BalanceInfo extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color iconColor;
+
+  const _BalanceInfo({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: AppColors.white.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 16, color: iconColor),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: AppColors.white.withValues(alpha: 0.7),
+              ),
+            ),
+            Text(
+              value,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.white,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
