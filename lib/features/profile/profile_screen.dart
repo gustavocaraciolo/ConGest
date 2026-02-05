@@ -32,11 +32,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SafeArea(
+            SafeArea(
               bottom: false,
               child: ProfileHeader(
                 name: 'João Silva',
                 email: 'joao.silva@email.com',
+                imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
               ),
             ),
             const SizedBox(height: 60),
