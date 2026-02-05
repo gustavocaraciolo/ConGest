@@ -4,6 +4,7 @@ import '../../app/theme/app_text_styles.dart';
 import '../../shared/widgets/congest_logo.dart';
 import '../../shared/widgets/social_login_button.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../home/main_shell.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
@@ -116,14 +117,14 @@ class SignInScreen extends StatelessWidget {
   }
 
   void _handleSocialLogin(BuildContext context, String provider) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login com $provider em breve!')),
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const MainShell()),
     );
   }
 
   void _handleSignUp(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Tela de cadastro em breve!')),
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const MainShell()),
     );
   }
 }
