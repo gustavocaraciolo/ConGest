@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/app_list_tile.dart';
 import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/segmented_tab.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/thin_icons.dart';
 
@@ -59,27 +62,10 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
             // Tab selector
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Container(
-                height: 44,
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: AppColors.buttonBackground,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    _TabButton(
-                      label: 'Pendentes',
-                      isActive: _selectedTab == 0,
-                      onTap: () => setState(() => _selectedTab = 0),
-                    ),
-                    _TabButton(
-                      label: 'Levantadas',
-                      isActive: _selectedTab == 1,
-                      onTap: () => setState(() => _selectedTab = 1),
-                    ),
-                  ],
-                ),
+              child: SegmentedTab(
+                labels: const ['Pendentes', 'Levantadas'],
+                selectedIndex: _selectedTab,
+                onChanged: (index) => setState(() => _selectedTab = index),
               ),
             ),
             const SizedBox(height: 16),
@@ -166,13 +152,8 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
+      child: AppCard(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.cardBorder),
-        ),
         child: Column(
           children: [
             Text(
@@ -190,45 +171,6 @@ class _StatCard extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TabButton extends StatelessWidget {
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _TabButton({
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            color: isActive ? AppColors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: isActive
-                    ? AppColors.textPrimary
-                    : AppColors.textTertiary,
-              ),
-            ),
-          ),
         ),
       ),
     );
@@ -258,47 +200,21 @@ class _ParcelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.cardBorder),
+    return AppListTile(
+      icon: ThinIcon(
+        painter: ParcelIconPainter(color: AppColors.accentAmber),
+        size: 22,
       ),
-      child: Column(
+      iconColor: AppColors.accentAmber,
+      iconSize: 44,
+      iconBorderRadius: 12,
+      title: sender,
+      subtitle: trackingCode,
+      trailing: StatusBadge(label: status, type: statusType),
+      bottom: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AppColors.accentAmber.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: ThinIcon(
-                    painter: ParcelIconPainter(color: AppColors.accentAmber),
-                    size: 22,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(sender, style: AppTextStyles.buttonSecondary()),
-                    const SizedBox(height: 2),
-                    Text(trackingCode, style: AppTextStyles.label()),
-                  ],
-                ),
-              ),
-              StatusBadge(label: status, type: statusType),
-            ],
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 2),
           Row(
             children: [
               ThinIcon(

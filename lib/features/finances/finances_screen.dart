@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/app_list_tile.dart';
+import '../../shared/widgets/icon_box.dart';
 import '../../shared/widgets/screen_header.dart';
-import '../../shared/widgets/status_badge.dart';
-import '../../shared/widgets/thin_icons.dart';
+import '../../shared/widgets/selection_chip.dart';
 
 class FinancesScreen extends StatefulWidget {
   const FinancesScreen({super.key});
@@ -70,34 +72,14 @@ class _FinancesScreenState extends State<FinancesScreen> {
                 separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   final filter = _filters[index];
-                  final isActive = filter == _selectedFilter;
-                  return GestureDetector(
+                  return SelectionChip(
+                    label: filter,
+                    isSelected: filter == _selectedFilter,
                     onTap: () => setState(() => _selectedFilter = filter),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            isActive ? AppColors.primary : AppColors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: isActive
-                              ? AppColors.primary
-                              : AppColors.cardBorder,
-                        ),
-                      ),
-                      child: Text(
-                        filter,
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: isActive
-                              ? AppColors.white
-                              : AppColors.textSecondary,
-                        ),
-                      ),
+                    borderRadius: 20,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
                     ),
                   );
                 },
@@ -190,25 +172,16 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              IconBox(
+                color: color,
+                size: 28,
+                borderRadius: 8,
                 child: Icon(icon, size: 16, color: color),
               ),
               const SizedBox(width: 8),
@@ -261,65 +234,35 @@ class _TransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = isIncome ? AppColors.success : AppColors.error;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.cardBorder),
+      child: AppListTile(
+        icon: Icon(
+          isIncome
+              ? Icons.arrow_downward_rounded
+              : Icons.arrow_upward_rounded,
+          size: 18,
+          color: color,
         ),
-        child: Row(
+        iconColor: color,
+        title: title,
+        subtitle: subtitle,
+        padding: const EdgeInsets.all(14),
+        trailing: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: (isIncome ? AppColors.success : AppColors.error)
-                    .withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                isIncome
-                    ? Icons.arrow_downward_rounded
-                    : Icons.arrow_upward_rounded,
-                size: 18,
-                color: isIncome ? AppColors.success : AppColors.error,
+            Text(
+              amount,
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: color,
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.buttonSecondary(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(subtitle, style: AppTextStyles.label()),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  amount,
-                  style: GoogleFonts.inter(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: isIncome ? AppColors.success : AppColors.error,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(time, style: AppTextStyles.label()),
-              ],
-            ),
+            const SizedBox(height: 2),
+            Text(time, style: AppTextStyles.label()),
           ],
         ),
       ),

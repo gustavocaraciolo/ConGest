@@ -1,11 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/app_list_tile.dart';
+import '../../shared/widgets/app_text_field.dart';
 import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/selection_chip.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/thin_icons.dart';
 
@@ -61,25 +64,27 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
       children: [
         Text('Nome do Visitante', style: AppTextStyles.label()),
         const SizedBox(height: 8),
-        _InputField(
+        AppTextField(
           controller: _nameController,
-          hint: 'Digite o nome completo',
-          icon: ProfileIconPainter(color: AppColors.textTertiary),
+          hintText: 'Digite o nome completo',
+          prefixIcon: ProfileIconPainter(color: AppColors.textTertiary),
+          backgroundColor: AppColors.white,
         ),
         const SizedBox(height: 16),
         Text('Documento (BI/Passaporte)', style: AppTextStyles.label()),
         const SizedBox(height: 8),
-        _InputField(
+        AppTextField(
           controller: _documentController,
-          hint: 'Número do documento',
-          icon: InvoiceIconPainter(color: AppColors.textTertiary),
+          hintText: 'Número do documento',
+          prefixIcon: InvoiceIconPainter(color: AppColors.textTertiary),
+          backgroundColor: AppColors.white,
         ),
         const SizedBox(height: 16),
         Text('Validade', style: AppTextStyles.label()),
         const SizedBox(height: 8),
         Row(
           children: [
-            _ValidityChip(
+            SelectionChip(
               label: '4 horas',
               isSelected: _expiryDate != null &&
                   _expiryDate!
@@ -89,9 +94,10 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
               onTap: () => setState(() =>
                   _expiryDate =
                       DateTime.now().add(const Duration(hours: 4))),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             ),
             const SizedBox(width: 8),
-            _ValidityChip(
+            SelectionChip(
               label: '1 dia',
               isSelected: _expiryDate != null &&
                   _expiryDate!
@@ -105,9 +111,10 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
               onTap: () => setState(() =>
                   _expiryDate =
                       DateTime.now().add(const Duration(days: 1))),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             ),
             const SizedBox(width: 8),
-            _ValidityChip(
+            SelectionChip(
               label: '3 dias',
               isSelected: _expiryDate != null &&
                   _expiryDate!
@@ -117,6 +124,7 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
               onTap: () => setState(() =>
                   _expiryDate =
                       DateTime.now().add(const Duration(days: 3))),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             ),
           ],
         ),
@@ -158,14 +166,9 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
     return Column(
       children: [
         const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
+        AppCard(
+          borderRadius: 20,
           padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.cardBorder),
-          ),
           child: Column(
             children: [
               Text(
@@ -278,83 +281,6 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
   }
 }
 
-class _InputField extends StatelessWidget {
-  final TextEditingController controller;
-  final String hint;
-  final ThinIconPainter icon;
-
-  const _InputField({
-    required this.controller,
-    required this.hint,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
-      child: TextField(
-        controller: controller,
-        style: AppTextStyles.body(),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: AppTextStyles.body(color: AppColors.textTertiary),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(14),
-            child: ThinIcon(painter: icon, size: 18),
-          ),
-          prefixIconConstraints:
-              const BoxConstraints(minWidth: 48, minHeight: 48),
-          border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-      ),
-    );
-  }
-}
-
-class _ValidityChip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _ValidityChip({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.cardBorder,
-          ),
-        ),
-        child: Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: isSelected ? AppColors.white : AppColors.textSecondary,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _RecentVisitorItem extends StatelessWidget {
   final String name;
   final String date;
@@ -369,56 +295,20 @@ class _RecentVisitorItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isActive = status == 'Activo';
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.cardBorder),
+    return AppListTile(
+      icon: ThinIcon(
+        painter: ProfileIconPainter(color: AppColors.accentIndigo),
+        size: 18,
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.accentIndigo.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: ThinIcon(
-                painter: ProfileIconPainter(color: AppColors.accentIndigo),
-                size: 18,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: AppTextStyles.buttonSecondary()),
-                Text(date, style: AppTextStyles.label()),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: (isActive ? AppColors.success : AppColors.textTertiary)
-                  .withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              status,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: isActive ? AppColors.success : AppColors.textTertiary,
-              ),
-            ),
-          ),
-        ],
+      iconColor: AppColors.accentIndigo,
+      iconSize: 36,
+      title: name,
+      subtitle: date,
+      padding: const EdgeInsets.all(14),
+      borderColor: null,
+      trailing: StatusBadge(
+        label: status,
+        type: isActive ? BadgeType.success : BadgeType.neutral,
       ),
     );
   }
