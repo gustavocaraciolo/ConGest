@@ -5,6 +5,7 @@ import '../../app/theme/app_text_styles.dart';
 import '../../shared/widgets/app_card.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/status_badge.dart';
+import '../../shared/widgets/success_popup.dart';
 import '../../shared/widgets/thin_icons.dart';
 
 class PollsScreen extends StatelessWidget {
@@ -19,7 +20,7 @@ class PollsScreen extends StatelessWidget {
           children: [
             ScreenHeader(
               title: 'Votações',
-              subtitle: 'Participe das decisões do condomínio',
+              centerTitle: true,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -290,8 +291,12 @@ class _PollCardState extends State<_PollCard> {
               child: ElevatedButton(
                 onPressed: () {
                   setState(() => _hasVoted = true);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Voto registado!')),
+                  SuccessPopup.show(
+                    context,
+                    title: 'Voto Registado',
+                    subtitle: 'O seu voto foi registado com sucesso!',
+                    buttonText: 'OK',
+                    onButtonPressed: () => Navigator.of(context).pop(),
                   );
                 },
                 style: ElevatedButton.styleFrom(

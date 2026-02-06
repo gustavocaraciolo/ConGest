@@ -31,6 +31,7 @@ class SuccessPopup extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
+      useSafeArea: false,
       builder: (context) => SuccessPopup(
         title: title,
         subtitle: subtitle,

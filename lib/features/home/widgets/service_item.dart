@@ -52,16 +52,20 @@ class ServiceItem extends StatelessWidget {
           const SizedBox(height: 8),
           SizedBox(
             width: 72.75,
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                height: 1.4,
-                letterSpacing: -0.01,
-                color: AppColors.textSecondary,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  height: 1.4,
+                  letterSpacing: -0.01,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ),
           ),

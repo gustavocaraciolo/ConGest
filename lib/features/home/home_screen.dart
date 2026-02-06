@@ -156,10 +156,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                // Row 2: Votações, Contactos, Mais
+                // Row 2: Comunicados, Votações, Contactos, Mais
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    ServiceItem(
+                      leadingWidget: const AnnouncementServiceIcon(),
+                      label: 'Comunicados',
+                      onTap: () =>
+                          _navigate(context, const AnnouncementsScreen()),
+                    ),
                     ServiceItem(
                       leadingWidget: const PollServiceIcon(),
                       label: 'Votações',

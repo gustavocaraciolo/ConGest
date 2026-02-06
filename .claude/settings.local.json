@@ -27,7 +27,9 @@
       "WebSearch",
       "WebFetch(domain:pub.dev)",
       "WebFetch(domain:github.com)",
-      "Bash(flutter clean:*)"
+      "Bash(flutter clean:*)",
+      "Bash(xcrun devicectl list:*)",
+      "Bash(flutter doctor:*)"
     ]
   }
 }

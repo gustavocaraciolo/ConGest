@@ -28,7 +28,7 @@ class _ParcelsScreenState extends State<ParcelsScreen> {
           children: [
             ScreenHeader(
               title: 'Encomendas',
-              subtitle: 'Encomendas recebidas na portaria',
+              centerTitle: true,
               onBack: () => Navigator.of(context).pop(),
             ),
 

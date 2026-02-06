@@ -42,7 +42,7 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
           children: [
             ScreenHeader(
               title: 'QR Visitante',
-              subtitle: 'Gere um código para o seu visitante',
+              centerTitle: true,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(

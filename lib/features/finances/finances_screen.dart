@@ -24,6 +24,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
           children: [
             ScreenHeader(
               title: 'Movimentos',
+              centerTitle: true,
               onBack: showBack ? () => Navigator.of(context).pop() : null,
             ),
 

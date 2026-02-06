@@ -8,6 +8,7 @@ import '../../shared/widgets/info_row.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/status_badge.dart';
+import '../../shared/widgets/success_popup.dart';
 import '../../shared/widgets/thin_icons.dart';
 
 class ValidateQrScreen extends StatefulWidget {
@@ -30,7 +31,7 @@ class _ValidateQrScreenState extends State<ValidateQrScreen> {
           children: [
             ScreenHeader(
               title: 'Validar QR Code',
-              subtitle: 'Verificar código de visitante',
+              centerTitle: true,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -280,12 +281,16 @@ class _ValidateQrScreenState extends State<ValidateQrScreen> {
           PrimaryButton(
             label: 'Registar Entrada',
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Entrada registada com sucesso!'),
-                ),
+              SuccessPopup.show(
+                context,
+                title: 'Entrada Registada',
+                subtitle: 'A entrada do visitante foi registada com sucesso!',
+                buttonText: 'OK',
+                onButtonPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() => _result = null);
+                },
               );
-              setState(() => _result = null);
             },
           ),
         const SizedBox(height: 12),

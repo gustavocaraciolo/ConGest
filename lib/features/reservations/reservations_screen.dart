@@ -33,7 +33,6 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           children: [
             ScreenHeader(
               title: 'Reservas',
-              subtitle: 'Espaços comuns do condomínio',
               centerTitle: true,
               onBack: showBack ? () => Navigator.of(context).pop() : null,
               trailing: GestureDetector(

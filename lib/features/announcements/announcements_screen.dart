@@ -20,7 +20,7 @@ class AnnouncementsScreen extends StatelessWidget {
           children: [
             ScreenHeader(
               title: 'Comunicados',
-              subtitle: 'Avisos e notificações',
+              centerTitle: true,
               onBack: showBack ? () => Navigator.of(context).pop() : null,
             ),
             Expanded(

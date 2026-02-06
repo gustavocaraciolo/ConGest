@@ -7,6 +7,7 @@ import '../../shared/widgets/app_text_field.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/selection_chip.dart';
 import '../../shared/widgets/status_badge.dart';
+import '../../shared/widgets/success_popup.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/thin_icons.dart';
 
@@ -22,7 +23,7 @@ class IncidentsScreen extends StatelessWidget {
           children: [
             ScreenHeader(
               title: 'Ocorrências',
-              subtitle: 'Registe e acompanhe problemas',
+              centerTitle: true,
               onBack: () => Navigator.of(context).pop(),
               trailing: GestureDetector(
                 onTap: () => _showNewIncident(context),
@@ -208,10 +209,12 @@ class _NewIncidentFormState extends State<_NewIncidentForm> {
           label: 'Registar Ocorrência',
           onPressed: () {
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Ocorrência registada com sucesso!'),
-              ),
+            SuccessPopup.show(
+              context,
+              title: 'Ocorrência Registada',
+              subtitle: 'A sua ocorrência foi registada com sucesso!',
+              buttonText: 'OK',
+              onButtonPressed: () => Navigator.of(context).pop(),
             );
           },
         ),

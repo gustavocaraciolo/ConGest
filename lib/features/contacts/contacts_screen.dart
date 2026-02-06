@@ -19,7 +19,7 @@ class ContactsScreen extends StatelessWidget {
           children: [
             ScreenHeader(
               title: 'Contactos',
-              subtitle: 'Contactos úteis do condomínio',
+              centerTitle: true,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
