@@ -981,6 +981,119 @@ class _ArrowUpIconPainter extends CustomPainter {
   }
 }
 
+/// Building Icon - Multi-story building
+/// From: Iconia Pro style - custom building icon
+class BuildingIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const BuildingIcon({
+    super.key,
+    this.size = 20,
+    this.color = AppColors.primary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(size, size),
+      painter: _BuildingIconPainter(color: color),
+    );
+  }
+}
+
+class _BuildingIconPainter extends CustomPainter {
+  final Color color;
+
+  _BuildingIconPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width / 12
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    final scale = size.width / 24;
+
+    // Building outline
+    final buildingPath = Path();
+    buildingPath.moveTo(4 * scale, 22 * scale);
+    buildingPath.lineTo(4 * scale, 4 * scale);
+    buildingPath.cubicTo(4 * scale, 3.47 * scale, 4.21 * scale, 2.96 * scale,
+        4.59 * scale, 2.59 * scale);
+    buildingPath.cubicTo(4.96 * scale, 2.21 * scale, 5.47 * scale, 2 * scale,
+        6 * scale, 2 * scale);
+    buildingPath.lineTo(18 * scale, 2 * scale);
+    buildingPath.cubicTo(18.53 * scale, 2 * scale, 19.04 * scale, 2.21 * scale,
+        19.41 * scale, 2.59 * scale);
+    buildingPath.cubicTo(19.79 * scale, 2.96 * scale, 20 * scale, 3.47 * scale,
+        20 * scale, 4 * scale);
+    buildingPath.lineTo(20 * scale, 22 * scale);
+    canvas.drawPath(buildingPath, paint);
+
+    // Bottom line
+    canvas.drawLine(
+      Offset(2 * scale, 22 * scale),
+      Offset(22 * scale, 22 * scale),
+      paint,
+    );
+
+    // Windows - row 1 (top)
+    canvas.drawLine(
+      Offset(8 * scale, 6 * scale),
+      Offset(8 * scale, 8 * scale),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(12 * scale, 6 * scale),
+      Offset(12 * scale, 8 * scale),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(16 * scale, 6 * scale),
+      Offset(16 * scale, 8 * scale),
+      paint,
+    );
+
+    // Windows - row 2
+    canvas.drawLine(
+      Offset(8 * scale, 11 * scale),
+      Offset(8 * scale, 13 * scale),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(12 * scale, 11 * scale),
+      Offset(12 * scale, 13 * scale),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(16 * scale, 11 * scale),
+      Offset(16 * scale, 13 * scale),
+      paint,
+    );
+
+    // Door
+    final doorPath = Path();
+    doorPath.moveTo(10 * scale, 22 * scale);
+    doorPath.lineTo(10 * scale, 17 * scale);
+    doorPath.cubicTo(10 * scale, 16.45 * scale, 10.45 * scale, 16 * scale,
+        11 * scale, 16 * scale);
+    doorPath.lineTo(13 * scale, 16 * scale);
+    doorPath.cubicTo(13.55 * scale, 16 * scale, 14 * scale, 16.45 * scale,
+        14 * scale, 17 * scale);
+    doorPath.lineTo(14 * scale, 22 * scale);
+    canvas.drawPath(doorPath, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _BuildingIconPainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
+}
+
 /// Chevron Right Icon
 /// From: Iconia Pro - 11. Arrows/chevron right.svg
 class ChevronRightIcon extends StatelessWidget {
