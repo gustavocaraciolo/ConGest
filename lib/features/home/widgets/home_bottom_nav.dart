@@ -6,12 +6,14 @@ class HomeBottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
   final VoidCallback? onScanTap;
+  final String? profileImageUrl;
 
   const HomeBottomNav({
     super.key,
     required this.currentIndex,
     required this.onTap,
     this.onScanTap,
+    this.profileImageUrl,
   });
 
   @override
@@ -85,11 +87,16 @@ class HomeBottomNav extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       _NavItem(
-                        leadingWidget: ProfileNavIcon(
-                          color: currentIndex == 3
-                              ? AppColors.primary
-                              : AppColors.textSecondary,
-                        ),
+                        leadingWidget: profileImageUrl != null
+                            ? _ProfileAvatar(
+                                imageUrl: profileImageUrl!,
+                                isSelected: currentIndex == 3,
+                              )
+                            : ProfileNavIcon(
+                                color: currentIndex == 3
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary,
+                              ),
                         label: 'Perfil',
                         isSelected: currentIndex == 3,
                         onTap: () => onTap(3),
@@ -144,6 +151,44 @@ class HomeBottomNav extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ProfileAvatar extends StatelessWidget {
+  final String imageUrl;
+  final bool isSelected;
+
+  const _ProfileAvatar({
+    required this.imageUrl,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: isSelected ? AppColors.primary : AppColors.textSecondary,
+          width: 1,
+        ),
+      ),
+      child: ClipOval(
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+          width: 22,
+          height: 22,
+          errorBuilder: (context, error, stackTrace) => Icon(
+            Icons.person,
+            size: 14,
+            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+          ),
+        ),
       ),
     );
   }

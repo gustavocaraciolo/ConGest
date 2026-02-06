@@ -3,6 +3,7 @@ import '../../app/theme/app_colors.dart';
 import '../../shared/widgets/home_icons.dart';
 import '../profile/profile_screen.dart';
 import 'widgets/balance_card.dart';
+import 'widgets/condominium_selector.dart';
 import 'widgets/home_bottom_nav.dart';
 import 'widgets/service_item.dart';
 import 'widgets/transaction_item.dart';
@@ -16,6 +17,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentNavIndex = 0;
+
+  final List<Condominium> _condominiums = const [
+    Condominium(id: '1', name: 'Edifício Aurora', unit: 'Apartamento 101'),
+    Condominium(id: '2', name: 'Residencial Sol Nascente', unit: 'Apartamento 302'),
+    Condominium(id: '3', name: 'Condomínio Jardins', unit: 'Casa 15'),
+  ];
+
+  late Condominium _selectedCondominium;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCondominium = _condominiums.first;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onScanTap: () {
           // Handle QR Code scan
         },
+        profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
       ),
     );
   }
@@ -64,44 +80,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         children: [
           Expanded(
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: const [
-                        Text(
-                          'Olá, Gustavo',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            height: 1.4,
-                            color: AppColors.cardDark,
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          '👋',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Bem-vindo ao seu condomínio',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        height: 1.43,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            child: CondominiumSelector(
+              selectedCondominium: _selectedCondominium,
+              condominiums: _condominiums,
+              onChanged: (condo) => setState(() => _selectedCondominium = condo),
             ),
           ),
           Stack(

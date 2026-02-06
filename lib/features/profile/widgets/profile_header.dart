@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../app/theme/app_colors.dart';
 
 class ProfileHeader extends StatelessWidget {
-  final String name;
-  final String email;
   final String? imageUrl;
   final VoidCallback? onEditPhoto;
-  final VoidCallback? onEditProfile;
 
   const ProfileHeader({
     super.key,
-    required this.name,
-    required this.email,
     this.imageUrl,
     this.onEditPhoto,
-    this.onEditProfile,
   });
 
   @override
@@ -36,16 +29,21 @@ class ProfileHeader extends StatelessWidget {
               ),
             ),
             Container(
-              height: 80,
+              height: 40,
               width: double.infinity,
-              color: AppColors.white,
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
+              ),
             ),
           ],
         ),
         Positioned(
           left: 0,
           right: 0,
-          top: 120,
+          top: 40,
           child: Column(
             children: [
               Stack(
@@ -100,26 +98,6 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              Text(
-                name,
-                style: GoogleFonts.inter(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                email,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textSecondary,
-                  height: 1.43,
-                ),
-              ),
             ],
           ),
         ),
@@ -148,8 +126,8 @@ class _GradientBackgroundPainter extends CustomPainter {
     final paint = Paint()
       ..shader = RadialGradient(
         colors: [
-          AppColors.primary.withValues(alpha: 0.15),
-          AppColors.primary.withValues(alpha: 0.05),
+          AppColors.white.withValues(alpha: 0.3),
+          AppColors.white.withValues(alpha: 0.0),
           Colors.transparent,
         ],
         stops: const [0.0, 0.5, 1.0],

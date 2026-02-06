@@ -35,12 +35,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SafeArea(
               bottom: false,
               child: ProfileHeader(
-                name: 'João Silva',
-                email: 'joao.silva@email.com',
                 imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
@@ -51,7 +49,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       SettingsItem(
                         leadingWidget: const UserIcon(),
                         label: 'Informações da Conta',
-                        onTap: () => _navigateTo(const EditProfileScreen()),
+                        onTap: () => _navigateTo(const EditProfileScreen(
+                          imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
+                        )),
                       ),
                       SettingsItem(
                         leadingWidget: const NotificationIcon(),

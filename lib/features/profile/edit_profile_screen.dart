@@ -6,7 +6,12 @@ import '../../shared/widgets/custom_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+  final String? imageUrl;
+
+  const EditProfileScreen({
+    super.key,
+    this.imageUrl,
+  });
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -62,14 +67,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               ],
                             ),
                             child: ClipOval(
-                              child: Container(
-                                color: AppColors.placeholderColor,
-                                child: const Icon(
-                                  Icons.person,
-                                  size: 50,
-                                  color: AppColors.white,
-                                ),
-                              ),
+                              child: widget.imageUrl != null
+                                  ? Image.network(
+                                      widget.imageUrl!,
+                                      fit: BoxFit.cover,
+                                      width: 100,
+                                      height: 100,
+                                      errorBuilder: (context, error, stackTrace) =>
+                                          _buildPlaceholder(),
+                                    )
+                                  : _buildPlaceholder(),
                             ),
                           ),
                           Positioned(
@@ -232,5 +239,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   void _handleSave() {
     Navigator.pop(context);
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      color: AppColors.placeholderColor,
+      width: 100,
+      height: 100,
+      child: const Icon(
+        Icons.person,
+        size: 50,
+        color: AppColors.white,
+      ),
+    );
   }
 }
