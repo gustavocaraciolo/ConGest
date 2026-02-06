@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../app/theme/app_colors.dart';
-import '../../app/theme/app_text_styles.dart';
-import '../../shared/widgets/app_list_tile.dart';
+import '../../shared/widgets/date_section_header.dart';
 import '../../shared/widgets/screen_header.dart';
-import '../../shared/widgets/section_group.dart';
-import '../../shared/widgets/status_badge.dart';
-import '../../shared/widgets/thin_icons.dart';
+import '../../shared/widgets/transaction_card.dart';
 import 'invoice_pdf_screen.dart';
 
-class InvoicesScreen extends StatelessWidget {
+class InvoicesScreen extends StatefulWidget {
   const InvoicesScreen({super.key});
+
+  @override
+  State<InvoicesScreen> createState() => _InvoicesScreenState();
+}
+
+class _InvoicesScreenState extends State<InvoicesScreen> {
+  void _openInvoice(String invoiceId, String description) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => InvoicePdfScreen(
+          invoiceId: invoiceId,
+          description: description,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,72 +32,100 @@ class InvoicesScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            ScreenHeader(
-              title: 'Facturas',
-              subtitle: 'Consulte as suas facturas mensais',
-              onBack: () => Navigator.of(context).pop(),
+            Builder(
+              builder: (context) {
+                final showBack = ModalRoute.of(context)?.canPop ?? false;
+                return ScreenHeader(
+                  title: 'Facturas',
+                  centerTitle: true,
+                  onBack: showBack ? () => Navigator.of(context).pop() : null,
+                );
+              },
             ),
+
+            // Invoices list
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 children: [
-                  SectionGroup(
-                    title: 'Fevereiro 2026',
-                    children: [
-                      _InvoiceCard(
-                        id: 'FAT-2026-02',
-                        description: 'Quota Condomínio',
-                        amount: '45.000 Kz',
-                        dueDate: '10 Fev 2026',
-                        isPaid: false,
-                      ),
-                    ],
+                  const DateSectionHeader(label: 'Fevereiro 2026'),
+                  TransactionCard(
+                    icon: SvgPicture.asset(
+                      'assets/icons/receipt.svg',
+                      width: 28,
+                      height: 28,
+                    ),
+                    iconBackgroundColor: Colors.transparent,
+                    title: 'Quota Condomínio',
+                    subtitle: '10 Fev 2026',
+                    amount: '45.000 Kz',
+                    time: 'Pendente',
+                    isIncome: false,
+                    onTap: () => _openInvoice('FAT-2026-02', 'Quota Condomínio'),
                   ),
-                  const SizedBox(height: 16),
-                  SectionGroup(
-                    title: 'Janeiro 2026',
-                    children: [
-                      _InvoiceCard(
-                        id: 'FAT-2026-01',
-                        description: 'Quota Condomínio',
-                        amount: '45.000 Kz',
-                        dueDate: '10 Jan 2026',
-                        isPaid: true,
-                      ),
-                      _InvoiceCard(
-                        id: 'FAT-2026-01-E',
-                        description: 'Taxa Extra - Manutenção Elevador',
-                        amount: '20.000 Kz',
-                        dueDate: '15 Jan 2026',
-                        isPaid: true,
-                      ),
-                    ],
+
+                  const SizedBox(height: 14),
+                  const DateSectionHeader(label: 'Janeiro 2026'),
+                  TransactionCard(
+                    icon: SvgPicture.asset(
+                      'assets/icons/receipt.svg',
+                      width: 28,
+                      height: 28,
+                    ),
+                    iconBackgroundColor: Colors.transparent,
+                    title: 'Quota Condomínio',
+                    subtitle: '10 Jan 2026',
+                    amount: '45.000 Kz',
+                    time: 'Pago',
+                    isIncome: true,
+                    onTap: () => _openInvoice('FAT-2026-01', 'Quota Condomínio'),
                   ),
-                  const SizedBox(height: 16),
-                  SectionGroup(
-                    title: 'Dezembro 2025',
-                    children: [
-                      _InvoiceCard(
-                        id: 'FAT-2025-12',
-                        description: 'Quota Condomínio',
-                        amount: '45.000 Kz',
-                        dueDate: '10 Dez 2025',
-                        isPaid: true,
-                      ),
-                    ],
+                  TransactionCard(
+                    icon: SvgPicture.asset(
+                      'assets/icons/receipt.svg',
+                      width: 28,
+                      height: 28,
+                    ),
+                    iconBackgroundColor: Colors.transparent,
+                    title: 'Taxa Extra - Manutenção Elevador',
+                    subtitle: '15 Jan 2026',
+                    amount: '20.000 Kz',
+                    time: 'Pago',
+                    isIncome: true,
+                    onTap: () => _openInvoice('FAT-2026-01-E', 'Taxa Extra - Manutenção Elevador'),
                   ),
-                  const SizedBox(height: 16),
-                  SectionGroup(
-                    title: 'Novembro 2025',
-                    children: [
-                      _InvoiceCard(
-                        id: 'FAT-2025-11',
-                        description: 'Quota Condomínio',
-                        amount: '45.000 Kz',
-                        dueDate: '10 Nov 2025',
-                        isPaid: true,
-                      ),
-                    ],
+
+                  const DateSectionHeader(label: 'Dezembro 2025'),
+                  TransactionCard(
+                    icon: SvgPicture.asset(
+                      'assets/icons/receipt.svg',
+                      width: 28,
+                      height: 28,
+                    ),
+                    iconBackgroundColor: Colors.transparent,
+                    title: 'Quota Condomínio',
+                    subtitle: '10 Dez 2025',
+                    amount: '45.000 Kz',
+                    time: 'Pago',
+                    isIncome: true,
+                    onTap: () => _openInvoice('FAT-2025-12', 'Quota Condomínio'),
+                  ),
+
+                  const SizedBox(height: 14),
+                  const DateSectionHeader(label: 'Novembro 2025'),
+                  TransactionCard(
+                    icon: SvgPicture.asset(
+                      'assets/icons/receipt.svg',
+                      width: 28,
+                      height: 28,
+                    ),
+                    iconBackgroundColor: Colors.transparent,
+                    title: 'Quota Condomínio',
+                    subtitle: '10 Nov 2025',
+                    amount: '45.000 Kz',
+                    time: 'Pago',
+                    isIncome: true,
+                    onTap: () => _openInvoice('FAT-2025-11', 'Quota Condomínio'),
                   ),
                   const SizedBox(height: 24),
                 ],
@@ -92,65 +133,6 @@ class InvoicesScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _InvoiceCard extends StatelessWidget {
-  final String id;
-  final String description;
-  final String amount;
-  final String dueDate;
-  final bool isPaid;
-
-  const _InvoiceCard({
-    required this.id,
-    required this.description,
-    required this.amount,
-    required this.dueDate,
-    required this.isPaid,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppListTile(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => InvoicePdfScreen(
-              invoiceId: id,
-              description: description,
-            ),
-          ),
-        );
-      },
-      icon: ThinIcon(
-        painter: PdfIconPainter(color: AppColors.primary),
-        size: 22,
-      ),
-      iconColor: AppColors.primary,
-      iconSize: 44,
-      iconBorderRadius: 12,
-      title: description,
-      subtitle: 'Vencimento: $dueDate',
-      trailing: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            amount,
-            style: GoogleFonts.inter(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 4),
-          StatusBadge(
-            label: isPaid ? 'Pago' : 'Pendente',
-            type: isPaid ? BadgeType.success : BadgeType.warning,
-          ),
-        ],
       ),
     );
   }

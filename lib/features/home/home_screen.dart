@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
-import '../../app/theme/app_text_styles.dart';
 import '../../shared/widgets/thin_icons.dart';
-import '../../shared/widgets/feature_card.dart';
 import '../invoices/invoices_screen.dart';
 import '../finances/finances_screen.dart';
 import '../reservations/reservations_screen.dart';
@@ -14,227 +11,245 @@ import '../parcels/parcels_screen.dart';
 import '../incidents/incidents_screen.dart';
 import '../contacts/contacts_screen.dart';
 import '../polls/polls_screen.dart';
+import '../profile/profile_screen.dart';
+import 'widgets/condominium_selector.dart';
+import 'widgets/balance_card.dart';
+import 'widgets/service_item.dart';
+import 'widgets/transaction_item.dart';
+import 'widgets/home_bottom_nav.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentNavIndex = 0;
+
+  final List<Condominium> _condominiums = const [
+    Condominium(id: '1', name: 'Edifício Aurora', unit: 'Bloco A • Apt 302'),
+    Condominium(id: '2', name: 'Residencial Sol', unit: 'Bloco B • Apt 101'),
+  ];
+
+  late Condominium _selectedCondominium;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCondominium = _condominiums.first;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.sectionBackground,
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // Header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-                child: Row(
+        bottom: false,
+        child: Column(
+          children: [
+            Expanded(
+              child: _currentNavIndex == 3
+                  ? const ProfileScreen()
+                  : _currentNavIndex == 2
+                      ? const ReservationsScreen()
+                      : _currentNavIndex == 1
+                          ? const InvoicesScreen()
+                          : _buildHomeContent(),
+            ),
+            HomeBottomNav(
+              currentIndex: _currentNavIndex,
+              onTap: (index) => setState(() => _currentNavIndex = index),
+              onScanTap: () => _navigate(context, const ValidateQrScreen()),
+              profileImageUrl:
+                  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHomeContent() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Navbar
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: CondominiumSelector(
+                    selectedCondominium: _selectedCondominium,
+                    condominiums: _condominiums,
+                    onChanged: (c) => setState(() => _selectedCondominium = c),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () {
+                    // TODO: Navigate to notifications
+                  },
+                  child: const NotificationBellIcon(
+                      size: 24, color: AppColors.cardDark),
+                ),
+              ],
+            ),
+          ),
+
+          // BalanceCard section
+          Container(
+            color: AppColors.sectionBackground,
+            padding: const EdgeInsets.all(20),
+            child: BalanceCard(
+              balance: '45.000 Kz',
+              onAddMoney: () => _navigate(context, const InvoicesScreen()),
+            ),
+          ),
+
+          // Services section
+          Container(
+            color: AppColors.white,
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Serviços',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4,
+                    color: AppColors.cardDark,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Row 1: QR Visitante, Movimentos, Encomendas, Ocorrências
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Olá, Morador',
-                            style: AppTextStyles.headingSmall(),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Bloco A • Apt 302',
-                            style: AppTextStyles.subtitle(),
-                          ),
-                        ],
+                    ServiceItem(
+                      leadingWidget: const QrCodeServiceIcon(),
+                      label: 'QR Visitante',
+                      onTap: () =>
+                          _navigate(context, const VisitorQrScreen()),
+                    ),
+                    ServiceItem(
+                      leadingWidget: const PaymentServiceIcon(),
+                      label: 'Movimentos',
+                      onTap: () => _navigate(context, const FinancesScreen()),
+                    ),
+                    ServiceItem(
+                      leadingWidget: const ParcelServiceIcon(),
+                      label: 'Encomendas',
+                      onTap: () => _navigate(context, const ParcelsScreen()),
+                    ),
+                    ServiceItem(
+                      leadingWidget: const IncidentServiceIcon(),
+                      label: 'Ocorrências',
+                      onTap: () => _navigate(context, const IncidentsScreen()),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Row 2: Votações, Contactos, Mais
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ServiceItem(
+                      leadingWidget: const PollServiceIcon(),
+                      label: 'Votações',
+                      onTap: () => _navigate(context, const PollsScreen()),
+                    ),
+                    ServiceItem(
+                      leadingWidget: const ContactServiceIcon(),
+                      label: 'Contactos',
+                      onTap: () => _navigate(context, const ContactsScreen()),
+                    ),
+                    ServiceItem(
+                      leadingWidget: const MoreServiceIcon(),
+                      label: 'Mais',
+                      onTap: () => _showMoreOptionsSheet(context),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // Transactions section
+          Container(
+            color: AppColors.white,
+            margin: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Movimentos',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                        color: AppColors.cardDark,
                       ),
                     ),
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Center(
-                        child: ThinIcon(
-                          painter: ProfileIconPainter(
-                            color: AppColors.primary,
+                    GestureDetector(
+                      onTap: () => _navigate(context, const FinancesScreen()),
+                      child: const Row(
+                        children: [
+                          Text(
+                            'Ver',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ),
                           ),
-                          size: 22,
-                        ),
+                          SizedBox(width: 4),
+                          ChevronRightIcon(size: 16, color: AppColors.primary),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ),
-
-            // Balance summary card
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.primary,
-                        Color(0xFF0055CC),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Saldo do mês',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.white.withValues(alpha: 0.7),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '85.000 Kz',
-                        style: GoogleFonts.inter(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          _BalanceInfo(
-                            label: 'Pago',
-                            value: '65.000 Kz',
-                            icon: Icons.arrow_upward_rounded,
-                            iconColor: AppColors.success,
-                          ),
-                          const SizedBox(width: 24),
-                          _BalanceInfo(
-                            label: 'Pendente',
-                            value: '20.000 Kz',
-                            icon: Icons.arrow_downward_rounded,
-                            iconColor: AppColors.warning,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 16),
+                TransactionItem(
+                  leadingIcon: const HomeTransactionIcon(
+                      size: 18, color: AppColors.white),
+                  iconBackgroundColor: AppColors.navyBlue,
+                  title: 'Quota Condomínio',
+                  subtitle: 'Janeiro',
+                  amount: '25.000 Kz',
+                  time: '03 Fev',
+                  isPositive: false,
                 ),
-              ),
-            ),
-
-            // Section title
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
-                child: Text(
-                  'Serviços',
-                  style: AppTextStyles.title(),
+                const SizedBox(height: 12),
+                TransactionItem(
+                  leadingIcon: const EventTransactionIcon(
+                      size: 18, color: AppColors.white),
+                  iconBackgroundColor: const Color(0xFFEA580C),
+                  title: 'Salão de Festas',
+                  subtitle: 'Reserva',
+                  amount: '10.000 Kz',
+                  time: '28 Jan',
+                  isPositive: false,
                 ),
-              ),
+              ],
             ),
+          ),
 
-            // Feature grid
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 1.2,
-                ),
-                delegate: SliverChildListDelegate([
-                  FeatureCard(
-                    title: 'Facturas',
-                    iconPainter: InvoiceIconPainter(color: AppColors.primary),
-                    accentColor: AppColors.primary,
-                    onTap: () => _navigate(context, const InvoicesScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'Movimentos',
-                    iconPainter: FinanceIconPainter(color: AppColors.accentTeal),
-                    accentColor: AppColors.accentTeal,
-                    onTap: () => _navigate(context, const FinancesScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'Reservas',
-                    iconPainter: ReservationIconPainter(
-                      color: AppColors.accentPurple,
-                    ),
-                    accentColor: AppColors.accentPurple,
-                    onTap: () => _navigate(context, const ReservationsScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'Comunicados',
-                    iconPainter: AnnouncementIconPainter(
-                      color: AppColors.accentOrange,
-                    ),
-                    accentColor: AppColors.accentOrange,
-                    badge: '3',
-                    onTap: () =>
-                        _navigate(context, const AnnouncementsScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'QR Visitante',
-                    iconPainter: QrCodeIconPainter(
-                      color: AppColors.accentIndigo,
-                    ),
-                    accentColor: AppColors.accentIndigo,
-                    onTap: () => _navigate(context, const VisitorQrScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'Validar QR',
-                    iconPainter: QrScanIconPainter(
-                      color: AppColors.accentPink,
-                    ),
-                    accentColor: AppColors.accentPink,
-                    onTap: () => _navigate(context, const ValidateQrScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'Encomendas',
-                    iconPainter: ParcelIconPainter(
-                      color: AppColors.accentAmber,
-                    ),
-                    accentColor: AppColors.accentAmber,
-                    badge: '2',
-                    onTap: () => _navigate(context, const ParcelsScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'Ocorrências',
-                    iconPainter: IncidentIconPainter(color: AppColors.error),
-                    accentColor: AppColors.error,
-                    onTap: () => _navigate(context, const IncidentsScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'Contactos',
-                    iconPainter: ContactsIconPainter(
-                      color: AppColors.accentTeal,
-                    ),
-                    accentColor: AppColors.accentTeal,
-                    onTap: () => _navigate(context, const ContactsScreen()),
-                  ),
-                  FeatureCard(
-                    title: 'Votações',
-                    iconPainter: PollIconPainter(color: AppColors.accentPurple),
-                    accentColor: AppColors.accentPurple,
-                    onTap: () => _navigate(context, const PollsScreen()),
-                  ),
-                ]),
-              ),
-            ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
-            ),
-          ],
-        ),
+          // Bottom padding for nav
+          const SizedBox(height: 24),
+        ],
       ),
     );
   }
@@ -244,57 +259,134 @@ class HomeScreen extends StatelessWidget {
       MaterialPageRoute(builder: (_) => screen),
     );
   }
+
+  void _showMoreOptionsSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.divider,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Mais Opções',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              _MoreOptionItem(
+                icon: Icons.qr_code_scanner,
+                label: 'Validar QR',
+                onTap: () {
+                  Navigator.pop(context);
+                  _navigate(context, const ValidateQrScreen());
+                },
+              ),
+              _MoreOptionItem(
+                icon: Icons.receipt_long_outlined,
+                label: 'Facturas',
+                onTap: () {
+                  Navigator.pop(context);
+                  _navigate(context, const InvoicesScreen());
+                },
+              ),
+              _MoreOptionItem(
+                icon: Icons.calendar_month_outlined,
+                label: 'Reservas',
+                onTap: () {
+                  Navigator.pop(context);
+                  _navigate(context, const ReservationsScreen());
+                },
+              ),
+              _MoreOptionItem(
+                icon: Icons.campaign_outlined,
+                label: 'Comunicados',
+                onTap: () {
+                  Navigator.pop(context);
+                  _navigate(context, const AnnouncementsScreen());
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _BalanceInfo extends StatelessWidget {
-  final String label;
-  final String value;
+class _MoreOptionItem extends StatelessWidget {
   final IconData icon;
-  final Color iconColor;
+  final String label;
+  final VoidCallback onTap;
 
-  const _BalanceInfo({
-    required this.label,
-    required this.value,
+  const _MoreOptionItem({
     required this.icon,
-    required this.iconColor,
+    required this.label,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(
-            color: AppColors.white.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, size: 16, color: iconColor),
-        ),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        child: Row(
           children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.sectionBackground,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                size: 20,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(width: 12),
             Text(
               label,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: AppColors.white.withValues(alpha: 0.7),
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
               ),
             ),
-            Text(
-              value,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.white,
-              ),
-            ),
+            const Spacer(),
+            const ChevronRightIcon(size: 16, color: AppColors.textSecondary),
           ],
         ),
-      ],
+      ),
     );
   }
 }

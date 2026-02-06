@@ -22,7 +22,12 @@
       "Bash(gh pr view:*)",
       "Bash(git fetch:*)",
       "Bash(git cherry-pick:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(flutter pub cache:*)",
+      "WebSearch",
+      "WebFetch(domain:pub.dev)",
+      "WebFetch(domain:github.com)",
+      "Bash(flutter clean:*)"
     ]
   }
 }

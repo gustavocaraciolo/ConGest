@@ -402,11 +402,9 @@ class _ValidationHistoryItem extends StatelessWidget {
     return AppListTile(
       icon: Icon(
         isValid ? Icons.check_rounded : Icons.close_rounded,
-        size: 18,
+        size: 24,
         color: isValid ? AppColors.success : AppColors.error,
       ),
-      iconColor: isValid ? AppColors.success : AppColors.error,
-      iconSize: 36,
       title: name,
       subtitle: '$unit • $time',
       padding: const EdgeInsets.all(14),

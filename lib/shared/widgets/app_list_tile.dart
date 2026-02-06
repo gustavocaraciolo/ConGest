@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
 import 'app_card.dart';
 import 'icon_box.dart';
 
 class AppListTile extends StatelessWidget {
   final Widget icon;
-  final Color iconColor;
+  final Color? iconColor;
   final double iconSize;
   final double iconBorderRadius;
   final String title;
@@ -20,7 +19,7 @@ class AppListTile extends StatelessWidget {
   const AppListTile({
     super.key,
     required this.icon,
-    required this.iconColor,
+    this.iconColor,
     this.iconSize = 40,
     this.iconBorderRadius = 10,
     required this.title,
@@ -43,12 +42,15 @@ class AppListTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              IconBox(
-                color: iconColor,
-                size: iconSize,
-                borderRadius: iconBorderRadius,
-                child: icon,
-              ),
+              if (iconColor != null)
+                IconBox(
+                  color: iconColor!,
+                  size: iconSize,
+                  borderRadius: iconBorderRadius,
+                  child: icon,
+                )
+              else
+                icon,
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

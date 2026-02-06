@@ -139,11 +139,8 @@ class _ContactCard extends StatelessWidget {
         painter: isEmergency
             ? IncidentIconPainter(color: color)
             : ContactsIconPainter(color: color),
-        size: 22,
+        size: 24,
       ),
-      iconColor: color,
-      iconSize: 44,
-      iconBorderRadius: 12,
       title: name,
       subtitle: role,
       padding: const EdgeInsets.all(14),

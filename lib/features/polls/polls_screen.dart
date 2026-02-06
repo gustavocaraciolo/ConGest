@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../shared/widgets/icon_box.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/thin_icons.dart';
@@ -158,12 +157,9 @@ class _PollCardState extends State<_PollCard> {
         children: [
           Row(
             children: [
-              IconBox(
-                color: AppColors.accentPurple,
-                child: ThinIcon(
-                  painter: PollIconPainter(color: AppColors.accentPurple),
-                  size: 20,
-                ),
+              ThinIcon(
+                painter: PollIconPainter(color: AppColors.accentPurple),
+                size: 24,
               ),
               const SizedBox(width: 12),
               Expanded(

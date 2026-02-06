@@ -297,10 +297,8 @@ class _RecentVisitorItem extends StatelessWidget {
     return AppListTile(
       icon: ThinIcon(
         painter: ProfileIconPainter(color: AppColors.accentIndigo),
-        size: 18,
+        size: 24,
       ),
-      iconColor: AppColors.accentIndigo,
-      iconSize: 36,
       title: name,
       subtitle: date,
       padding: const EdgeInsets.all(14),

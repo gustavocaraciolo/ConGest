@@ -17,11 +17,12 @@ class SegmentedTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 44,
+      height: 48,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.buttonBackground,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.inputBorder),
       ),
       child: Row(
         children: List.generate(labels.length, (index) {
@@ -31,18 +32,18 @@ class SegmentedTab extends StatelessWidget {
               onTap: () => onChanged(index),
               child: Container(
                 decoration: BoxDecoration(
-                  color: isActive ? AppColors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(9),
+                  color: isActive ? AppColors.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(isActive ? 10 : 8),
                 ),
                 child: Center(
                   child: Text(
                     labels[index],
                     style: GoogleFonts.inter(
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: isActive
-                          ? AppColors.textPrimary
-                          : AppColors.textTertiary,
+                          ? AppColors.white
+                          : AppColors.textPrimary,
                     ),
                   ),
                 ),

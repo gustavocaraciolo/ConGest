@@ -8,6 +8,7 @@ class ScreenHeader extends StatelessWidget {
   final String? subtitle;
   final VoidCallback? onBack;
   final Widget? trailing;
+  final bool centerTitle;
 
   const ScreenHeader({
     super.key,
@@ -15,6 +16,7 @@ class ScreenHeader extends StatelessWidget {
     this.subtitle,
     this.onBack,
     this.trailing,
+    this.centerTitle = false,
   });
 
   @override
@@ -31,16 +33,17 @@ class ScreenHeader extends StatelessWidget {
                 GestureDetector(
                   onTap: onBack,
                   child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(12),
+                    width: 48,
+                    height: 48,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF8F8F8),
+                      shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: ThinIcon(
                         painter: ArrowBackIconPainter(
                           color: AppColors.textPrimary,
+                          strokeWidth: 2.0,
                         ),
                         size: 20,
                       ),
@@ -53,6 +56,7 @@ class ScreenHeader extends StatelessWidget {
                 child: Text(
                   title,
                   style: AppTextStyles.headingSmall(),
+                  textAlign: centerTitle && onBack == null ? TextAlign.center : null,
                 ),
               ),
               if (trailing != null) trailing!,

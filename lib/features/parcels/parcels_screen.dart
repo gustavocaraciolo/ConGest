@@ -203,11 +203,8 @@ class _ParcelCard extends StatelessWidget {
     return AppListTile(
       icon: ThinIcon(
         painter: ParcelIconPainter(color: AppColors.accentAmber),
-        size: 22,
+        size: 24,
       ),
-      iconColor: AppColors.accentAmber,
-      iconSize: 44,
-      iconBorderRadius: 12,
       title: sender,
       subtitle: trackingCode,
       trailing: StatusBadge(label: status, type: statusType),

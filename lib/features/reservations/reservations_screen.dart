@@ -10,6 +10,7 @@ import '../../shared/widgets/selection_chip.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/thin_icons.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../shared/widgets/success_popup.dart';
 
 class ReservationsScreen extends StatefulWidget {
   const ReservationsScreen({super.key});
@@ -33,6 +34,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
             ScreenHeader(
               title: 'Reservas',
               subtitle: 'Espaços comuns do condomínio',
+              centerTitle: true,
               onBack: showBack ? () => Navigator.of(context).pop() : null,
               trailing: GestureDetector(
                 onTap: () => _showNewReservation(context),
@@ -164,6 +166,17 @@ class _AvailableSpaces extends StatelessWidget {
   }
 }
 
+ThinIconPainter _iconForSpace(String spaceName, Color color) {
+  switch (spaceName) {
+    case 'Churrasqueira':
+      return ChurrasqueiraIconPainter(color: color);
+    case 'Salão de Festas':
+      return SalaoFestasIconPainter(color: color);
+    default:
+      return ReservationIconPainter(color: color);
+  }
+}
+
 class _ReservationCard extends StatelessWidget {
   final String space;
   final String date;
@@ -183,12 +196,9 @@ class _ReservationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppListTile(
       icon: ThinIcon(
-        painter: ReservationIconPainter(color: AppColors.accentPurple),
+        painter: _iconForSpace(space, AppColors.primary),
         size: 22,
       ),
-      iconColor: AppColors.accentPurple,
-      iconSize: 44,
-      iconBorderRadius: 12,
       title: space,
       subtitle: '$date • $time',
       trailing: StatusBadge(label: status, type: statusType),
@@ -213,12 +223,9 @@ class _SpaceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppListTile(
       icon: ThinIcon(
-        painter: ReservationIconPainter(color: AppColors.accentPurple),
+        painter: _iconForSpace(name, AppColors.primary),
         size: 22,
       ),
-      iconColor: AppColors.accentPurple,
-      iconSize: 44,
-      iconBorderRadius: 12,
       title: name,
       subtitle: description,
       bottom: Row(
@@ -348,11 +355,16 @@ class _NewReservationFormState extends State<_NewReservationForm> {
           label: 'Solicitar Reserva',
           onPressed: _selectedSpace != null && _selectedDate != null
               ? () {
+                  final navigator = Navigator.of(context, rootNavigator: true);
+                  // Close the bottom sheet first
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Reserva solicitada com sucesso!'),
-                    ),
+                  // Show success popup using the root navigator context
+                  SuccessPopup.show(
+                    navigator.context,
+                    title: 'Reserva Solicitada',
+                    subtitle: 'A sua reserva foi solicitada com sucesso!',
+                    buttonText: 'Voltar',
+                    onButtonPressed: () => navigator.pop(),
                   );
                 }
               : null,

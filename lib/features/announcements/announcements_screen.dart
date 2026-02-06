@@ -127,9 +127,8 @@ class _AnnouncementCard extends StatelessWidget {
     return AppListTile(
       icon: ThinIcon(
         painter: AnnouncementIconPainter(color: AppColors.accentOrange),
-        size: 20,
+        size: 24,
       ),
-      iconColor: AppColors.accentOrange,
       title: title,
       subtitle: '$author • $date',
       trailing: trailing,

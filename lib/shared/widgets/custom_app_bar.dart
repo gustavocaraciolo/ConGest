@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
+import 'thin_icons.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -30,14 +31,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
+                    color: const Color(0xFFF8F8F8),
                     borderRadius: BorderRadius.circular(80),
                   ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.arrow_back_ios_new,
-                      size: 16,
-                      color: AppColors.textPrimary,
+                  child: Center(
+                    child: ThinIcon(
+                      painter: ArrowBackIconPainter(
+                        color: AppColors.textPrimary,
+                        strokeWidth: 2.0,
+                      ),
+                      size: 20,
                     ),
                   ),
                 ),

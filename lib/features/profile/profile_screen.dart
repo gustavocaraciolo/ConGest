@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
 import '../../shared/widgets/toggle_switch.dart';
+import '../../shared/widgets/thin_icons.dart';
 import '../auth/login_screen.dart';
 import 'edit_profile_screen.dart';
 import 'notification_settings_screen.dart';
@@ -12,7 +13,6 @@ import 'widgets/profile_header.dart';
 import 'widgets/settings_card.dart';
 import 'widgets/settings_item.dart';
 import 'widgets/logout_popup.dart';
-import 'widgets/profile_icons.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
-import '../../../shared/widgets/home_icons.dart';
+import '../../../shared/widgets/thin_icons.dart';
 
 class Condominium {
   final String id;

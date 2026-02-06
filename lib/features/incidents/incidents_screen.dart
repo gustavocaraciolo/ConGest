@@ -126,9 +126,8 @@ class _IncidentCard extends StatelessWidget {
     return AppListTile(
       icon: ThinIcon(
         painter: IncidentIconPainter(color: AppColors.error),
-        size: 20,
+        size: 24,
       ),
-      iconColor: AppColors.error,
       title: title,
       subtitle: '$category • $date',
       trailing: StatusBadge(label: status, type: statusType),

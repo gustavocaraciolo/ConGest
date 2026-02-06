@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
-import '../../../shared/widgets/nav_icons.dart';
+import '../../../shared/widgets/thin_icons.dart';
 
 class HomeBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -59,12 +59,12 @@ class HomeBottomNav extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       _NavItem(
-                        leadingWidget: WalletNavIcon(
+                        leadingWidget: InvoiceNavIcon(
                           color: currentIndex == 1
                               ? AppColors.primary
                               : AppColors.textSecondary,
                         ),
-                        label: 'Pagamentos',
+                        label: 'Facturas',
                         isSelected: currentIndex == 1,
                         onTap: () => onTap(1),
                       ),
