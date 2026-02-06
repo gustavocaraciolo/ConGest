@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import 'primary_button.dart';
-import 'status_badge.dart';
 
 class SuccessPopup extends StatelessWidget {
   final String title;
@@ -88,13 +87,17 @@ class SuccessPopup extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Icon container
-                      const SizedBox(
+                      Container(
                         width: 120,
                         height: 120,
-                        child: StatusBadge(
-                          size: 120,
-                          type: StatusBadgeType.success,
-                          iconScale: 0.4,
+                        decoration: BoxDecoration(
+                          color: AppColors.success,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.check,
+                          size: 48,
+                          color: AppColors.white,
                         ),
                       ),
                       const SizedBox(height: 8),

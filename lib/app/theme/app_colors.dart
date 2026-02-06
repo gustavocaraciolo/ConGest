@@ -29,4 +29,29 @@ class AppColors {
   static const Color accentPink = Color(0xFFEC4899);
   static const Color accentIndigo = Color(0xFF6366F1);
   static const Color accentAmber = Color(0xFFF59E0B);
+
+  // Legacy colors (for compatibility)
+  static const Color background = Color(0xFFFAFAFA);
+  static const Color cardBackground = Color(0xFFF8F8F8);
+  static const Color successLight = Color(0xFF00C566);
+  static const Color errorDark = Color(0xFFFF0A36);
+  static const Color progressBackground = Color(0xFFEFEFF1);
+  static const Color overlayBackground = Color(0x80111111);
+  static const Color placeholderColor = Color(0xFFCECECE);
+  static const Color inputBackground = Color(0xFFF5F5F5);
+  static const Color inputBorder = Color(0xFFF2F2F2);
+  static const Color textHint = Color(0xFF98A2B3);
+
+  // Home screen colors
+  static const Color textMuted = Color(0xFFA7A8AC);
+  static const Color cardDark = Color(0xFF202020);
+  static const Color sectionBackground = Color(0xFFF7F7F7);
+  static const Color shadowLight = Color(0x0F000000);
+  static const Color dribbblePink = Color(0xFFEA4C89);
+  static const Color navyBlue = Color(0xFF1E3A8A);
+
+  // Profile/Settings colors
+  static const Color danger = Color(0xFFFF2424);
+  static const Color toggleInactive = Color(0xFFE5E7EB);
+  static const Color settingsDivider = Color(0xFFF6F6F6);
 }

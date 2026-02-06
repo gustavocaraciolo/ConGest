@@ -187,10 +187,8 @@ class InvoicePdfScreen extends StatelessWidget {
   }
 
   void _shareInvoice(BuildContext context) {
-    SharePlus.instance.share(
-      ShareParams(
-        text: 'Factura $invoiceId - $description\nValor: 45.000 Kz\nConGest - Gestão de Condomínio',
-      ),
+    Share.share(
+      'Factura $invoiceId - $description\nValor: 45.000 Kz\nConGest - Gestão de Condomínio',
     );
   }
 }

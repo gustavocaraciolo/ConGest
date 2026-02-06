@@ -10,6 +10,7 @@ import '../../shared/widgets/app_text_field.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/selection_chip.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/thin_icons.dart';
 
 class VisitorQrScreen extends StatefulWidget {
@@ -193,11 +194,11 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
                   version: QrVersions.auto,
                   size: 200,
                   eyeStyle: const QrEyeStyle(
-                    eyeShape: QrEyeShape.roundedRect,
+                    eyeShape: QrEyeShape.square,
                     color: AppColors.textPrimary,
                   ),
                   dataModuleStyle: const QrDataModuleStyle(
-                    dataModuleShape: QrDataModuleShape.roundedRect,
+                    dataModuleShape: QrDataModuleShape.square,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -225,10 +226,8 @@ class _VisitorQrScreenState extends State<VisitorQrScreen> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  SharePlus.instance.share(
-                    ShareParams(
-                      text: 'ConGest - Código de Visitante\nNome: ${_nameController.text}\nCódigo: $_generatedCode',
-                    ),
+                  Share.share(
+                    'ConGest - Código de Visitante\nNome: ${_nameController.text}\nCódigo: $_generatedCode',
                   );
                 },
                 child: Container(
