@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/app_bottom_sheet.dart';
+import '../../shared/widgets/app_list_tile.dart';
+import '../../shared/widgets/app_text_field.dart';
 import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/selection_chip.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/thin_icons.dart';
@@ -93,11 +96,10 @@ class IncidentsScreen extends StatelessWidget {
   }
 
   void _showNewIncident(BuildContext context) {
-    showModalBottomSheet(
+    AppBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => const _NewIncidentSheet(),
+      title: 'Nova Ocorrência',
+      child: const _NewIncidentForm(),
     );
   }
 }
@@ -121,67 +123,33 @@ class _IncidentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.cardBorder),
+    return AppListTile(
+      icon: ThinIcon(
+        painter: IncidentIconPainter(color: AppColors.error),
+        size: 20,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: ThinIcon(
-                    painter: IncidentIconPainter(color: AppColors.error),
-                    size: 20,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: AppTextStyles.buttonSecondary()),
-                    const SizedBox(height: 2),
-                    Text('$category • $date', style: AppTextStyles.label()),
-                  ],
-                ),
-              ),
-              StatusBadge(label: status, type: statusType),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            description,
-            style: AppTextStyles.subtitle(),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+      iconColor: AppColors.error,
+      title: title,
+      subtitle: '$category • $date',
+      trailing: StatusBadge(label: status, type: statusType),
+      bottom: Text(
+        description,
+        style: AppTextStyles.subtitle(),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
 }
 
-class _NewIncidentSheet extends StatefulWidget {
-  const _NewIncidentSheet();
+class _NewIncidentForm extends StatefulWidget {
+  const _NewIncidentForm();
 
   @override
-  State<_NewIncidentSheet> createState() => _NewIncidentSheetState();
+  State<_NewIncidentForm> createState() => _NewIncidentFormState();
 }
 
-class _NewIncidentSheetState extends State<_NewIncidentSheet> {
+class _NewIncidentFormState extends State<_NewIncidentForm> {
   String? _selectedCategory;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -205,132 +173,51 @@ class _NewIncidentSheetState extends State<_NewIncidentSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 24,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.divider,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text('Nova Ocorrência', style: AppTextStyles.headingSmall()),
-            const SizedBox(height: 20),
-            Text('Título', style: AppTextStyles.label()),
-            const SizedBox(height: 8),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.cardBorder),
-              ),
-              child: TextField(
-                controller: _titleController,
-                style: AppTextStyles.body(),
-                decoration: InputDecoration(
-                  hintText: 'Descreva o problema brevemente',
-                  hintStyle:
-                      AppTextStyles.body(color: AppColors.textTertiary),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(14),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text('Categoria', style: AppTextStyles.label()),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _categories.map((cat) {
-                final isSelected = cat == _selectedCategory;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedCategory = cat),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          isSelected ? AppColors.primary : AppColors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.cardBorder,
-                      ),
-                    ),
-                    child: Text(
-                      cat,
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: isSelected
-                            ? AppColors.white
-                            : AppColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            Text('Descrição', style: AppTextStyles.label()),
-            const SizedBox(height: 8),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.cardBorder),
-              ),
-              child: TextField(
-                controller: _descriptionController,
-                style: AppTextStyles.body(),
-                maxLines: 4,
-                decoration: InputDecoration(
-                  hintText: 'Detalhe o problema...',
-                  hintStyle:
-                      AppTextStyles.body(color: AppColors.textTertiary),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(14),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            PrimaryButton(
-              label: 'Registar Ocorrência',
-              onPressed: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Ocorrência registada com sucesso!'),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Título', style: AppTextStyles.label()),
+        const SizedBox(height: 8),
+        AppTextField(
+          controller: _titleController,
+          hintText: 'Descreva o problema brevemente',
         ),
-      ),
+        const SizedBox(height: 16),
+        Text('Categoria', style: AppTextStyles.label()),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: _categories.map((cat) {
+            return SelectionChip(
+              label: cat,
+              isSelected: cat == _selectedCategory,
+              onTap: () => setState(() => _selectedCategory = cat),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 16),
+        Text('Descrição', style: AppTextStyles.label()),
+        const SizedBox(height: 8),
+        AppTextField(
+          controller: _descriptionController,
+          hintText: 'Detalhe o problema...',
+          maxLines: 4,
+        ),
+        const SizedBox(height: 24),
+        PrimaryButton(
+          label: 'Registar Ocorrência',
+          onPressed: () {
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Ocorrência registada com sucesso!'),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 }

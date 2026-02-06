@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/icon_box.dart';
+import '../../shared/widgets/info_row.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/thin_icons.dart';
 
@@ -32,19 +34,13 @@ class InvoicePdfScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => _shareInvoice(context),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: ThinIcon(
-                          painter:
-                              ShareIconPainter(color: AppColors.primary),
-                          size: 20,
-                        ),
+                    child: IconBox(
+                      color: AppColors.primary,
+                      size: 40,
+                      borderRadius: 12,
+                      child: ThinIcon(
+                        painter: ShareIconPainter(color: AppColors.primary),
+                        size: 20,
                       ),
                     ),
                   ),
@@ -63,7 +59,6 @@ class InvoicePdfScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      // PDF header simulation
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(24),
@@ -96,34 +91,33 @@ class InvoicePdfScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      // Invoice content
                       Expanded(
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.all(24),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _InfoRow(
+                              InfoRow(
                                 label: 'Nº da Factura',
                                 value: invoiceId,
                               ),
                               const SizedBox(height: 12),
-                              _InfoRow(
+                              InfoRow(
                                 label: 'Descrição',
                                 value: description,
                               ),
                               const SizedBox(height: 12),
-                              const _InfoRow(
+                              const InfoRow(
                                 label: 'Condomínio',
                                 value: 'Residencial Solar do Atlântico',
                               ),
                               const SizedBox(height: 12),
-                              const _InfoRow(
+                              const InfoRow(
                                 label: 'Unidade',
                                 value: 'Bloco A - Apartamento 302',
                               ),
                               const SizedBox(height: 12),
-                              const _InfoRow(
+                              const InfoRow(
                                 label: 'Período',
                                 value: 'Janeiro 2026',
                               ),
@@ -197,29 +191,6 @@ class InvoicePdfScreen extends StatelessWidget {
       ShareParams(
         text: 'Factura $invoiceId - $description\nValor: 45.000 Kz\nConGest - Gestão de Condomínio',
       ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(label, style: AppTextStyles.label()),
-        ),
-        Expanded(
-          child: Text(value, style: AppTextStyles.subtitle()),
-        ),
-      ],
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/app_list_tile.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/thin_icons.dart';
@@ -107,76 +107,40 @@ class _AnnouncementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isNew
-              ? AppColors.primary.withValues(alpha: 0.3)
-              : AppColors.cardBorder,
+    Widget? trailing;
+    if (priority != null) {
+      trailing = StatusBadge(
+        label: priority!,
+        type: priorityType ?? BadgeType.neutral,
+      );
+    } else if (isNew) {
+      trailing = Container(
+        width: 8,
+        height: 8,
+        decoration: const BoxDecoration(
+          color: AppColors.primary,
+          shape: BoxShape.circle,
         ),
+      );
+    }
+
+    return AppListTile(
+      icon: ThinIcon(
+        painter: AnnouncementIconPainter(color: AppColors.accentOrange),
+        size: 20,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.accentOrange.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: ThinIcon(
-                    painter: AnnouncementIconPainter(
-                      color: AppColors.accentOrange,
-                    ),
-                    size: 20,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: AppTextStyles.buttonSecondary()),
-                    const SizedBox(height: 2),
-                    Text(
-                      '$author • $date',
-                      style: AppTextStyles.label(),
-                    ),
-                  ],
-                ),
-              ),
-              if (priority != null)
-                StatusBadge(
-                  label: priority!,
-                  type: priorityType ?? BadgeType.neutral,
-                ),
-              if (isNew && priority == null)
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            body,
-            style: AppTextStyles.subtitle(),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+      iconColor: AppColors.accentOrange,
+      title: title,
+      subtitle: '$author • $date',
+      trailing: trailing,
+      borderColor: isNew
+          ? AppColors.primary.withValues(alpha: 0.3)
+          : null,
+      bottom: Text(
+        body,
+        style: AppTextStyles.subtitle(),
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

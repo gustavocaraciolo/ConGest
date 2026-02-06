@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/icon_box.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/thin_icons.dart';
@@ -140,51 +142,34 @@ class _PollCardState extends State<_PollCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+    Widget statusWidget;
+    if (widget.result != null) {
+      statusWidget = StatusBadge(label: widget.result!, type: BadgeType.success);
+    } else if (widget.isActive) {
+      statusWidget = const StatusBadge(label: 'Aberta', type: BadgeType.info);
+    } else {
+      statusWidget = const StatusBadge(label: 'Encerrada', type: BadgeType.neutral);
+    }
+
+    return AppCard(
+      borderRadius: 16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.accentPurple.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: ThinIcon(
-                    painter: PollIconPainter(color: AppColors.accentPurple),
-                    size: 20,
-                  ),
+              IconBox(
+                color: AppColors.accentPurple,
+                child: ThinIcon(
+                  painter: PollIconPainter(color: AppColors.accentPurple),
+                  size: 20,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(widget.title, style: AppTextStyles.buttonSecondary()),
               ),
-              if (widget.result != null)
-                StatusBadge(
-                  label: widget.result!,
-                  type: BadgeType.success,
-                )
-              else if (widget.isActive)
-                StatusBadge(
-                  label: 'Aberta',
-                  type: BadgeType.info,
-                )
-              else
-                const StatusBadge(
-                  label: 'Encerrada',
-                  type: BadgeType.neutral,
-                ),
+              statusWidget,
             ],
           ),
           const SizedBox(height: 10),

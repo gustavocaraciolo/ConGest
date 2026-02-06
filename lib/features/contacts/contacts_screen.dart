@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/app_list_tile.dart';
 import '../../shared/widgets/screen_header.dart';
+import '../../shared/widgets/section_group.dart';
 import '../../shared/widgets/thin_icons.dart';
 
 class ContactsScreen extends StatelessWidget {
@@ -24,16 +26,16 @@ class ContactsScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 children: [
-                  _ContactSection(
+                  SectionGroup(
                     title: 'Administração',
-                    contacts: const [
-                      _ContactData(
+                    children: const [
+                      _ContactCard(
                         name: 'Administração Geral',
                         role: 'Gestor do Condomínio',
                         phone: '+244 923 456 789',
                         email: 'admin@congest.ao',
                       ),
-                      _ContactData(
+                      _ContactCard(
                         name: 'Secretaria',
                         role: 'Atendimento ao Condómino',
                         phone: '+244 923 456 790',
@@ -42,15 +44,15 @@ class ContactsScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _ContactSection(
+                  SectionGroup(
                     title: 'Segurança',
-                    contacts: const [
-                      _ContactData(
+                    children: const [
+                      _ContactCard(
                         name: 'Portaria Principal',
                         role: '24 horas',
                         phone: '+244 923 456 791',
                       ),
-                      _ContactData(
+                      _ContactCard(
                         name: 'Segurança Patrimonial',
                         role: 'Rondas e Monitoramento',
                         phone: '+244 923 456 792',
@@ -58,20 +60,20 @@ class ContactsScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _ContactSection(
+                  SectionGroup(
                     title: 'Manutenção',
-                    contacts: const [
-                      _ContactData(
+                    children: const [
+                      _ContactCard(
                         name: 'Manutenção Geral',
                         role: 'Reparações e Serviços',
                         phone: '+244 923 456 793',
                       ),
-                      _ContactData(
+                      _ContactCard(
                         name: 'Electricista',
                         role: 'Emergências Eléctricas',
                         phone: '+244 923 456 794',
                       ),
-                      _ContactData(
+                      _ContactCard(
                         name: 'Canalizador',
                         role: 'Emergências Hidráulicas',
                         phone: '+244 923 456 795',
@@ -79,22 +81,22 @@ class ContactsScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _ContactSection(
+                  SectionGroup(
                     title: 'Emergência',
-                    contacts: const [
-                      _ContactData(
+                    children: const [
+                      _ContactCard(
                         name: 'Bombeiros',
                         role: 'Corpo de Bombeiros',
                         phone: '115',
                         isEmergency: true,
                       ),
-                      _ContactData(
+                      _ContactCard(
                         name: 'Polícia',
                         role: 'Polícia Nacional',
                         phone: '113',
                         isEmergency: true,
                       ),
-                      _ContactData(
+                      _ContactCard(
                         name: 'Ambulância',
                         role: 'Serviço de Urgência Médica',
                         phone: '112',
@@ -113,130 +115,67 @@ class ContactsScreen extends StatelessWidget {
   }
 }
 
-class _ContactData {
+class _ContactCard extends StatelessWidget {
   final String name;
   final String role;
   final String phone;
   final String? email;
   final bool isEmergency;
 
-  const _ContactData({
+  const _ContactCard({
     required this.name,
     required this.role,
     required this.phone,
     this.email,
     this.isEmergency = false,
   });
-}
-
-class _ContactSection extends StatelessWidget {
-  final String title;
-  final List<_ContactData> contacts;
-
-  const _ContactSection({
-    required this.title,
-    required this.contacts,
-  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: AppTextStyles.title()),
-        const SizedBox(height: 8),
-        ...contacts.map((contact) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _ContactCard(contact: contact),
-            )),
-      ],
-    );
-  }
-}
+    final color = isEmergency ? AppColors.error : AppColors.accentTeal;
 
-class _ContactCard extends StatelessWidget {
-  final _ContactData contact;
-
-  const _ContactCard({required this.contact});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: contact.isEmergency
-              ? AppColors.error.withValues(alpha: 0.3)
-              : AppColors.cardBorder,
-        ),
+    return AppListTile(
+      icon: ThinIcon(
+        painter: isEmergency
+            ? IncidentIconPainter(color: color)
+            : ContactsIconPainter(color: color),
+        size: 22,
       ),
-      child: Row(
+      iconColor: color,
+      iconSize: 44,
+      iconBorderRadius: 12,
+      title: name,
+      subtitle: role,
+      padding: const EdgeInsets.all(14),
+      borderColor: isEmergency
+          ? AppColors.error.withValues(alpha: 0.3)
+          : null,
+      trailing: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            width: 44,
-            height: 44,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: (contact.isEmergency
-                      ? AppColors.error
-                      : AppColors.accentTeal)
-                  .withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              color: AppColors.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Center(
-              child: contact.isEmergency
-                  ? ThinIcon(
-                      painter: IncidentIconPainter(color: AppColors.error),
-                      size: 22,
-                    )
-                  : ThinIcon(
-                      painter: ContactsIconPainter(
-                        color: AppColors.accentTeal,
-                      ),
-                      size: 22,
-                    ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(contact.name, style: AppTextStyles.buttonSecondary()),
-                const SizedBox(height: 2),
-                Text(contact.role, style: AppTextStyles.label()),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  contact.phone,
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
+            child: Text(
+              phone,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
               ),
-              if (contact.email != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  contact.email!,
-                  style: AppTextStyles.label(color: AppColors.primary),
-                ),
-              ],
-            ],
+            ),
           ),
+          if (email != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              email!,
+              style: AppTextStyles.label(color: AppColors.primary),
+            ),
+          ],
         ],
       ),
     );

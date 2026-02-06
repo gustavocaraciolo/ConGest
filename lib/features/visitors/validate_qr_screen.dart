@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_text_styles.dart';
+import '../../shared/widgets/app_card.dart';
+import '../../shared/widgets/app_list_tile.dart';
+import '../../shared/widgets/app_text_field.dart';
+import '../../shared/widgets/info_row.dart';
 import '../../shared/widgets/screen_header.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/status_badge.dart';
@@ -59,7 +62,6 @@ class _ValidateQrScreenState extends State<ValidateQrScreen> {
           ),
           child: Stack(
             children: [
-              // Viewfinder corners
               Positioned(
                 top: 24,
                 left: 24,
@@ -82,7 +84,6 @@ class _ValidateQrScreenState extends State<ValidateQrScreen> {
                 child:
                     _ViewfinderCorner(position: _CornerPosition.bottomRight),
               ),
-              // Center icon
               Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -132,22 +133,10 @@ class _ValidateQrScreenState extends State<ValidateQrScreen> {
           style: AppTextStyles.label(),
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.cardBorder),
-          ),
-          child: TextField(
-            style: AppTextStyles.body(),
-            textAlign: TextAlign.center,
-            decoration: InputDecoration(
-              hintText: 'Código do visitante',
-              hintStyle: AppTextStyles.body(color: AppColors.textTertiary),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(14),
-            ),
-          ),
+        AppTextField(
+          hintText: 'Código do visitante',
+          backgroundColor: AppColors.white,
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
 
@@ -212,19 +201,12 @@ class _ValidateQrScreenState extends State<ValidateQrScreen> {
     return Column(
       children: [
         const SizedBox(height: 16),
-        Container(
-          width: double.infinity,
+        AppCard(
+          borderRadius: 20,
           padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: _result!.isValid
-                  ? AppColors.success.withValues(alpha: 0.3)
-                  : AppColors.error.withValues(alpha: 0.3),
-              width: 2,
-            ),
-          ),
+          borderColor: _result!.isValid
+              ? AppColors.success.withValues(alpha: 0.3)
+              : AppColors.error.withValues(alpha: 0.3),
           child: Column(
             children: [
               Container(
@@ -260,29 +242,34 @@ class _ValidateQrScreenState extends State<ValidateQrScreen> {
               ),
               const SizedBox(height: 24),
               if (_result!.isValid) ...[
-                _ResultRow(
+                InfoRow(
                   label: 'Visitante',
                   value: _result!.visitorName,
+                  labelWidth: 100,
                 ),
                 const SizedBox(height: 12),
-                _ResultRow(
+                InfoRow(
                   label: 'Documento',
                   value: _result!.document,
+                  labelWidth: 100,
                 ),
                 const SizedBox(height: 12),
-                _ResultRow(
+                InfoRow(
                   label: 'Destino',
                   value: _result!.unit,
+                  labelWidth: 100,
                 ),
                 const SizedBox(height: 12),
-                _ResultRow(
+                InfoRow(
                   label: 'Morador',
                   value: _result!.resident,
+                  labelWidth: 100,
                 ),
                 const SizedBox(height: 12),
-                _ResultRow(
+                InfoRow(
                   label: 'Válido até',
                   value: _result!.validUntil,
+                  labelWidth: 100,
                 ),
               ],
             ],
@@ -341,29 +328,6 @@ class _ValidationResult {
     required this.validUntil,
     required this.isValid,
   });
-}
-
-class _ResultRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _ResultRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(label, style: AppTextStyles.label()),
-        ),
-        Expanded(
-          child: Text(value, style: AppTextStyles.subtitle()),
-        ),
-      ],
-    );
-  }
 }
 
 enum _CornerPosition { topLeft, topRight, bottomLeft, bottomRight }
@@ -435,44 +399,20 @@ class _ValidationHistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.cardBorder),
+    return AppListTile(
+      icon: Icon(
+        isValid ? Icons.check_rounded : Icons.close_rounded,
+        size: 18,
+        color: isValid ? AppColors.success : AppColors.error,
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: (isValid ? AppColors.success : AppColors.error)
-                  .withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              isValid ? Icons.check_rounded : Icons.close_rounded,
-              size: 18,
-              color: isValid ? AppColors.success : AppColors.error,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: AppTextStyles.buttonSecondary()),
-                Text('$unit • $time', style: AppTextStyles.label()),
-              ],
-            ),
-          ),
-          StatusBadge(
-            label: isValid ? 'Válido' : 'Inválido',
-            type: isValid ? BadgeType.success : BadgeType.error,
-          ),
-        ],
+      iconColor: isValid ? AppColors.success : AppColors.error,
+      iconSize: 36,
+      title: name,
+      subtitle: '$unit • $time',
+      padding: const EdgeInsets.all(14),
+      trailing: StatusBadge(
+        label: isValid ? 'Válido' : 'Inválido',
+        type: isValid ? BadgeType.success : BadgeType.error,
       ),
     );
   }
