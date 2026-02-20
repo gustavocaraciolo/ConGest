@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
+import '../../shared/widgets/thin_icons.dart';
 import 'widgets/service_item.dart';
 import 'widgets/transaction_item.dart';
 
@@ -98,8 +99,7 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
                   borderRadius: BorderRadius.circular(80),
                 ),
                 child: const Center(
-                  child: Icon(
-                    Icons.notifications_outlined,
+                  child: NotificationBellIcon(
                     size: 24,
                     color: AppColors.cardDark,
                   ),
@@ -253,22 +253,22 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ServiceItem(
-                icon: Icons.account_balance_wallet_outlined,
+                leadingWidget: const PaymentServiceIcon(),
                 label: 'Financeiro',
                 onTap: () {},
               ),
               ServiceItem(
-                icon: Icons.people_outline_rounded,
+                leadingWidget: const ContactServiceIcon(),
                 label: 'Moradores',
                 onTap: () {},
               ),
               ServiceItem(
-                icon: Icons.send_rounded,
+                leadingWidget: const AnnouncementServiceIcon(),
                 label: 'Comunicados',
                 onTap: () {},
               ),
               ServiceItem(
-                icon: Icons.payments_outlined,
+                leadingWidget: const InvoiceServiceIcon(),
                 label: 'Cobranças',
                 onTap: () {},
               ),
@@ -279,22 +279,22 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ServiceItem(
-                icon: Icons.calendar_month_rounded,
+                leadingWidget: const ReservationServiceIcon(),
                 label: 'Reservas',
                 onTap: () {},
               ),
               ServiceItem(
-                icon: Icons.warning_amber_rounded,
+                leadingWidget: const IncidentServiceIcon(),
                 label: 'Ocorrências',
                 onTap: () {},
               ),
               ServiceItem(
-                icon: Icons.bar_chart_rounded,
+                leadingWidget: const FinanceServiceIcon(),
                 label: 'Relatórios',
                 onTap: () {},
               ),
               ServiceItem(
-                icon: Icons.grid_view_rounded,
+                leadingWidget: const MoreServiceIcon(),
                 label: 'Mais',
                 onTap: () {},
               ),
@@ -326,8 +326,8 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
               ),
               GestureDetector(
                 onTap: () {},
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Text(
                       'Ver todos',
                       style: TextStyle(
@@ -339,8 +339,7 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
                       ),
                     ),
                     SizedBox(width: 4),
-                    Icon(
-                      Icons.chevron_right_rounded,
+                    ChevronRightIcon(
                       size: 16,
                       color: AppColors.primary,
                     ),
@@ -357,8 +356,7 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
             time: 'Hoje',
             isPositive: true,
             iconBackgroundColor: const Color(0xFFECFDF5),
-            leadingIcon: const Icon(
-              Icons.arrow_downward_rounded,
+            leadingIcon: const ArrowDownIcon(
               size: 18,
               color: Color(0xFF10B981),
             ),
@@ -371,8 +369,7 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
             time: 'Hoje',
             isPositive: false,
             iconBackgroundColor: const Color(0xFFFFF7ED),
-            leadingIcon: const Icon(
-              Icons.report_problem_outlined,
+            leadingIcon: const IncidentServiceIcon(
               size: 18,
               color: Color(0xFFEA580C),
             ),
@@ -385,8 +382,7 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
             time: 'Ontem',
             isPositive: true,
             iconBackgroundColor: const Color(0xFFEFF6FF),
-            leadingIcon: const Icon(
-              Icons.event_available_outlined,
+            leadingIcon: const ReservationServiceIcon(
               size: 18,
               color: AppColors.navyBlue,
             ),
@@ -425,14 +421,23 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
                   Row(
                     children: [
                       _buildNavItem(
-                        icon: Icons.home_rounded,
+                        leadingWidget: HomeNavIcon(
+                          color: _currentNavIndex == 0
+                              ? AppColors.primary
+                              : AppColors.textSecondary,
+                        ),
                         label: 'Início',
                         isSelected: _currentNavIndex == 0,
                         onTap: () => setState(() => _currentNavIndex = 0),
                       ),
                       const SizedBox(width: 8),
                       _buildNavItem(
-                        icon: Icons.people_outline_rounded,
+                        leadingWidget: ContactServiceIcon(
+                          size: 24,
+                          color: _currentNavIndex == 1
+                              ? AppColors.primary
+                              : AppColors.textSecondary,
+                        ),
                         label: 'Moradores',
                         isSelected: _currentNavIndex == 1,
                         onTap: () => setState(() => _currentNavIndex = 1),
@@ -443,14 +448,22 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
                   Row(
                     children: [
                       _buildNavItem(
-                        icon: Icons.account_balance_wallet_outlined,
+                        leadingWidget: WalletNavIcon(
+                          color: _currentNavIndex == 2
+                              ? AppColors.primary
+                              : AppColors.textSecondary,
+                        ),
                         label: 'Financeiro',
                         isSelected: _currentNavIndex == 2,
                         onTap: () => setState(() => _currentNavIndex = 2),
                       ),
                       const SizedBox(width: 8),
                       _buildNavItem(
-                        icon: Icons.person_outline_rounded,
+                        leadingWidget: ProfileNavIcon(
+                          color: _currentNavIndex == 3
+                              ? AppColors.primary
+                              : AppColors.textSecondary,
+                        ),
                         label: 'Perfil',
                         isSelected: _currentNavIndex == 3,
                         onTap: () => setState(() => _currentNavIndex = 3),
@@ -484,10 +497,9 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
                       ),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.send_rounded,
-                    color: AppColors.white,
+                  child: const AnnouncementServiceIcon(
                     size: 24,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -514,7 +526,7 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
   }
 
   Widget _buildNavItem({
-    required IconData icon,
+    required Widget leadingWidget,
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
@@ -530,11 +542,7 @@ class _HomeGestorScreenState extends State<HomeGestorScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 12),
-            Icon(
-              icon,
-              size: 24,
-              color: color,
-            ),
+            leadingWidget,
             const SizedBox(height: 10),
             Text(
               label,

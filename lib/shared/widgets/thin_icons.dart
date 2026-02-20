@@ -1468,6 +1468,25 @@ class MoreServiceIcon extends StatelessWidget {
   }
 }
 
+class FinanceServiceIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const FinanceServiceIcon({
+    super.key,
+    this.size = 34,
+    this.color = AppColors.textSecondary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ThinIcon(
+      painter: FinanceIconPainter(color: color),
+      size: size,
+    );
+  }
+}
+
 // ─── Navigation Icons ───
 
 class HomeNavIcon extends StatelessWidget {
