@@ -14,12 +14,13 @@ class InvoicesScreen extends StatefulWidget {
 }
 
 class _InvoicesScreenState extends State<InvoicesScreen> {
-  void _openInvoice(String invoiceId, String description) {
+  void _openInvoice(String invoiceId, String description, {bool isPaid = false}) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => InvoicePdfScreen(
           invoiceId: invoiceId,
           description: description,
+          isPaid: isPaid,
         ),
       ),
     );
@@ -78,7 +79,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                     amount: '45.000 Kz',
                     time: 'Pago',
                     isIncome: true,
-                    onTap: () => _openInvoice('FAT-2026-01', 'Quota Condomínio'),
+                    onTap: () => _openInvoice('FAT-2026-01', 'Quota Condomínio', isPaid: true),
                   ),
                   TransactionCard(
                     icon: SvgPicture.asset(
@@ -92,7 +93,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                     amount: '20.000 Kz',
                     time: 'Pago',
                     isIncome: true,
-                    onTap: () => _openInvoice('FAT-2026-01-E', 'Taxa Extra - Manutenção Elevador'),
+                    onTap: () => _openInvoice('FAT-2026-01-E', 'Taxa Extra - Manutenção Elevador', isPaid: true),
                   ),
 
                   const DateSectionHeader(label: 'Dezembro 2025'),
@@ -108,7 +109,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                     amount: '45.000 Kz',
                     time: 'Pago',
                     isIncome: true,
-                    onTap: () => _openInvoice('FAT-2025-12', 'Quota Condomínio'),
+                    onTap: () => _openInvoice('FAT-2025-12', 'Quota Condomínio', isPaid: true),
                   ),
 
                   const SizedBox(height: 14),
@@ -125,7 +126,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                     amount: '45.000 Kz',
                     time: 'Pago',
                     isIncome: true,
-                    onTap: () => _openInvoice('FAT-2025-11', 'Quota Condomínio'),
+                    onTap: () => _openInvoice('FAT-2025-11', 'Quota Condomínio', isPaid: true),
                   ),
                   const SizedBox(height: 24),
                 ],

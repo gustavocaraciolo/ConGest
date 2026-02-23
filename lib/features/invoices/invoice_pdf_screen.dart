@@ -4,16 +4,19 @@ import 'package:pdfx/pdfx.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../app/theme/app_colors.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/thin_icons.dart';
 
 class InvoicePdfScreen extends StatelessWidget {
   final String invoiceId;
   final String description;
+  final bool isPaid;
 
   const InvoicePdfScreen({
     super.key,
     required this.invoiceId,
     required this.description,
+    this.isPaid = false,
   });
 
   @override
@@ -31,7 +34,7 @@ class InvoicePdfScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      // Back button (CustomAppBar style)
+                      // Back button
                       GestureDetector(
                         onTap: () => Navigator.of(context).pop(),
                         child: Container(
@@ -94,146 +97,275 @@ class InvoicePdfScreen extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    children: [
-                      // Merchant header
-                      const SizedBox(height: 8),
-                      Text(
-                        'Factura de Condomínio',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.textSecondary,
-                        ),
+                child: Column(
+                  children: [
+                    // Merchant header
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'CONGEST',
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textPrimary,
-                        ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 4),
+                          Text(
+                            'Factura de Condomínio',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'CONGEST',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '10 Janeiro 2026',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '10 Janeiro 2026',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
+                    ),
 
-                      // Dashed divider
-                      const _DashedDivider(),
-                      const SizedBox(height: 12),
+                    const SizedBox(height: 16),
 
-                      // Bill items
-                      const _BillItemRow(
-                        name: 'Quota Mensal',
-                        unitPrice: '35.000 Kz',
-                        quantity: 'x1',
-                        total: '35.000 Kz',
+                    // Payment info fields
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.cardBorder),
                       ),
-                      const SizedBox(height: 8),
-                      const _BillItemRow(
-                        name: 'Água Comum',
-                        unitPrice: '5.000 Kz',
-                        quantity: 'x1',
-                        total: '5.000 Kz',
-                      ),
-                      const SizedBox(height: 8),
-                      const _BillItemRow(
-                        name: 'Energia Áreas Comuns',
-                        unitPrice: '3.000 Kz',
-                        quantity: 'x1',
-                        total: '3.000 Kz',
-                      ),
-                      const SizedBox(height: 8),
-                      const _BillItemRow(
-                        name: 'Fundo de Reserva',
-                        unitPrice: '2.000 Kz',
-                        quantity: 'x1',
-                        total: '2.000 Kz',
-                      ),
+                      child: Column(
+                        children: [
+                          // Linha 1: Unidade | Status
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _InfoField(
+                                  label: 'Unidade',
+                                  value: 'Bloco A - Apt 301',
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Status',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.textTertiary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    StatusBadge(
+                                      label: isPaid ? 'Pago' : 'Pendente',
+                                      type: isPaid
+                                          ? BadgeType.success
+                                          : BadgeType.warning,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
 
-                      const SizedBox(height: 12),
-                      const _DashedDivider(),
-                      const SizedBox(height: 12),
+                          const SizedBox(height: 16),
 
-                      // Summary section
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(12),
+                          // Linha 2: Vencimento | Pago em
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _InfoField(
+                                  label: 'Vencimento',
+                                  value: '10 Fev 2026',
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: isPaid
+                                    ? _InfoField(
+                                        label: 'Pago em',
+                                        value: '08 Fev 2026',
+                                      )
+                                    : const SizedBox.shrink(),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Linha 3: Valor (destaque)
+                          _InfoField(
+                            label: 'Valor',
+                            value: '45.000 Kz',
+                            isHighlighted: true,
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Linha 4: Forma de pagamento
+                          _InfoField(
+                            label: 'Forma de pagamento',
+                            value: isPaid
+                                ? 'Transferência Bancária'
+                                : '—',
+                          ),
+
+                          // Condicional: Entidade e Referência (se NÃO pago)
+                          if (!isPaid) ...[
+                            const SizedBox(height: 16),
+                            const _DashedDivider(),
+                            const SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _InfoField(
+                                    label: 'Entidade',
+                                    value: '21100',
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: _InfoField(
+                                    label: 'Referência',
+                                    value: '000 123 456 789 012',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Accordion: Detalhes da Factura
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.cardBorder),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          dividerColor: Colors.transparent,
                         ),
-                        child: const Column(
+                        child: ExpansionTile(
+                          initiallyExpanded: false,
+                          tilePadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          childrenPadding: const EdgeInsets.fromLTRB(
+                            16, 0, 16, 16,
+                          ),
+                          title: Text(
+                            'Detalhes da Factura',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          iconColor: AppColors.textSecondary,
+                          collapsedIconColor: AppColors.textSecondary,
                           children: [
-                            _SummaryRow(
-                              label: 'Subtotal',
+                            const _DashedDivider(),
+                            const SizedBox(height: 12),
+                            _AccordionItem(
+                              name: 'Quota Mensal',
+                              value: '35.000 Kz',
+                            ),
+                            const SizedBox(height: 8),
+                            _AccordionItem(
+                              name: 'Água Comum',
+                              value: '5.000 Kz',
+                            ),
+                            const SizedBox(height: 8),
+                            _AccordionItem(
+                              name: 'Energia Áreas Comuns',
+                              value: '3.000 Kz',
+                            ),
+                            const SizedBox(height: 8),
+                            _AccordionItem(
+                              name: 'Fundo de Reserva',
+                              value: '2.000 Kz',
+                            ),
+                            const SizedBox(height: 12),
+                            const _DashedDivider(),
+                            const SizedBox(height: 12),
+                            _AccordionItem(
+                              name: 'Subtotal',
                               value: '45.000 Kz',
                             ),
-                            SizedBox(height: 10),
-                            _SummaryRow(label: 'IVA', value: '0 Kz'),
-                            SizedBox(height: 10),
-                            _SummaryRow(
-                              label: 'Taxa de Serviço',
+                            const SizedBox(height: 8),
+                            _AccordionItem(
+                              name: 'IVA',
                               value: '0 Kz',
                             ),
-                            SizedBox(height: 10),
-                            _SummaryRow(label: 'Desconto', value: '0 Kz'),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-                      const _DashedDivider(),
-                      const SizedBox(height: 12),
-
-                      // Total amount
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Total Amount',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.textSecondary,
-                              ),
+                            const SizedBox(height: 8),
+                            _AccordionItem(
+                              name: 'Taxa de Serviço',
+                              value: '0 Kz',
                             ),
-                            Text(
-                              '45.000 Kz',
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.textPrimary,
-                              ),
+                            const SizedBox(height: 8),
+                            _AccordionItem(
+                              name: 'Desconto',
+                              value: '0 Kz',
+                            ),
+                            const SizedBox(height: 12),
+                            const _DashedDivider(),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Total',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                Text(
+                                  '45.000 Kz',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 8),
-                    ],
-                  ),
+                    ),
+
+                    const SizedBox(height: 16),
+                  ],
                 ),
               ),
             ),
@@ -334,6 +466,78 @@ class _PdfViewerScreenState extends State<_PdfViewerScreen> {
   }
 }
 
+// --- Helper widgets ---
+
+class _InfoField extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isHighlighted;
+
+  const _InfoField({
+    required this.label,
+    required this.value,
+    this.isHighlighted = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textTertiary,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            fontSize: isHighlighted ? 20 : 14,
+            fontWeight: isHighlighted ? FontWeight.w700 : FontWeight.w500,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AccordionItem extends StatelessWidget {
+  final String name;
+  final String value;
+
+  const _AccordionItem({required this.name, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          name,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _DashedDivider extends StatelessWidget {
   const _DashedDivider();
 
@@ -371,112 +575,4 @@ class _DashedLinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _BillItemRow extends StatelessWidget {
-  final String name;
-  final String unitPrice;
-  final String quantity;
-  final String total;
-
-  const _BillItemRow({
-    required this.name,
-    required this.unitPrice,
-    required this.quantity,
-    required this.total,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          // Left column: name + unit price
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  unitPrice,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Center: quantity
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              quantity,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-          // Right: total
-          Text(
-            total,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SummaryRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _SummaryRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textSecondary,
-          ),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
-          ),
-        ),
-      ],
-    );
-  }
 }
