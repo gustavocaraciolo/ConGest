@@ -81,10 +81,10 @@ class _OtpInputState extends State<OtpInput> {
         final isFocused = _focusNodes[index].hasFocus;
         final hasValue = _controllers[index].text.isNotEmpty;
 
-        return Container(
-          width: 72,
+        return Expanded(
+          child: Container(
           height: 52,
-          margin: EdgeInsets.only(right: index < widget.length - 1 ? 14 : 0),
+          margin: EdgeInsets.only(right: index < widget.length - 1 ? 10 : 0),
           decoration: BoxDecoration(
             color: isFocused
                 ? AppColors.primary.withValues(alpha: 0.06)
@@ -137,6 +137,7 @@ class _OtpInputState extends State<OtpInput> {
               ],
             ),
           ),
+        ),
         );
       }),
     );

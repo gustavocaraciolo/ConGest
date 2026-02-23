@@ -3,7 +3,7 @@ import '../../app/theme/app_colors.dart';
 import '../../shared/widgets/custom_app_bar.dart';
 import '../../shared/widgets/custom_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
-import 'new_password_screen.dart';
+import 'forgot_password_otp_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -30,7 +30,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           children: [
             const CustomAppBar(title: 'Esqueci a Palavra-passe'),
             Expanded(
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
                 child: Column(
                   children: [
@@ -45,12 +45,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       label: 'Continuar',
                       onPressed: _handleContinue,
                     ),
-                    const Spacer(),
                   ],
                 ),
               ),
             ),
-            // Home indicator
             Container(
               height: 36,
               child: Center(
@@ -74,7 +72,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const NewPasswordScreen(),
+        builder: (_) => ForgotPasswordOtpScreen(
+          email: _emailController.text,
+        ),
       ),
     );
   }

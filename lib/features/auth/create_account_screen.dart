@@ -4,8 +4,7 @@ import '../../app/theme/app_colors.dart';
 import '../../shared/widgets/custom_app_bar.dart';
 import '../../shared/widgets/custom_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
-import '../../shared/widgets/password_indicator.dart';
-import 'enter_otp_screen.dart';
+import 'verify_and_set_password_screen.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -15,21 +14,21 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
-  final _fullNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _documentController = TextEditingController();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final _confirmEmailController = TextEditingController();
 
-  String _password = '';
+  String _selectedCountry = 'Angola';
+
+  final List<String> _countries = ['Angola', 'Brasil', 'Portugal'];
 
   @override
   void dispose() {
-    _fullNameController.dispose();
-    _lastNameController.dispose();
+    _documentController.dispose();
+    _nameController.dispose();
     _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    _confirmEmailController.dispose();
     super.dispose();
   }
 
@@ -46,19 +45,87 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
                 child: Column(
                   children: [
-                    // Form fields
-                    CustomTextField(
-                      label: 'Nome Completo',
-                      hintText: 'Introduza o seu nome completo',
-                      controller: _fullNameController,
+                    // Country dropdown
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'País do Documento',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textPrimary,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        DropdownButtonFormField<String>(
+                          initialValue: _selectedCountry,
+                          items: _countries.map((country) {
+                            return DropdownMenuItem(
+                              value: country,
+                              child: Text(
+                                country,
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCountry = value!;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: AppColors.buttonBackground,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                color: AppColors.primary,
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: AppColors.textPrimary,
+                          ),
+                          dropdownColor: AppColors.white,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
+                    // Document field
                     CustomTextField(
-                      label: 'Apelido',
-                      hintText: 'Introduza o seu apelido',
-                      controller: _lastNameController,
+                      label: 'Documento',
+                      hintText: 'Introduza o número do documento',
+                      controller: _documentController,
                     ),
                     const SizedBox(height: 16),
+                    // Name field
+                    CustomTextField(
+                      label: 'Nome',
+                      hintText: 'Introduza o seu nome',
+                      controller: _nameController,
+                    ),
+                    const SizedBox(height: 16),
+                    // Email field
                     CustomTextField(
                       label: 'Email',
                       hintText: 'Introduza o seu email',
@@ -66,52 +133,18 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       controller: _emailController,
                     ),
                     const SizedBox(height: 16),
+                    // Confirm email field
                     CustomTextField(
-                      label: 'Palavra-passe',
-                      hintText: 'Introduza a sua palavra-passe',
-                      obscureText: true,
-                      showPasswordToggle: true,
-                      controller: _passwordController,
-                      onChanged: (value) {
-                        setState(() {
-                          _password = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    CustomTextField(
-                      label: 'Confirmar Palavra-passe',
-                      hintText: 'Confirme a sua palavra-passe',
-                      obscureText: true,
-                      showPasswordToggle: true,
-                      controller: _confirmPasswordController,
-                    ),
-                    const SizedBox(height: 16),
-                    // Password indicators
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PasswordIndicator(
-                          text: 'Mínimo 8 caracteres',
-                          isValid: PasswordValidation.hasMinLength(_password),
-                        ),
-                        const SizedBox(height: 8),
-                        PasswordIndicator(
-                          text: 'Pelo menos 1 número (1-9)',
-                          isValid: PasswordValidation.hasNumber(_password),
-                        ),
-                        const SizedBox(height: 8),
-                        PasswordIndicator(
-                          text: 'Pelo menos letras minúsculas ou maiúsculas',
-                          isValid: PasswordValidation.hasUpperOrLower(_password),
-                        ),
-                      ],
+                      label: 'Confirmação de Email',
+                      hintText: 'Confirme o seu email',
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _confirmEmailController,
                     ),
                     const SizedBox(height: 24),
-                    // Create account button
+                    // Continue button
                     PrimaryButton(
-                      label: 'Criar Conta',
-                      onPressed: _handleCreateAccount,
+                      label: 'Continuar',
+                      onPressed: _handleContinue,
                     ),
                     const SizedBox(height: 20),
                     // Sign in link
@@ -165,11 +198,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     );
   }
 
-  void _handleCreateAccount() {
+  void _handleContinue() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const EnterOtpScreen(),
+        builder: (_) => const VerifyAndSetPasswordScreen(),
       ),
     );
   }
