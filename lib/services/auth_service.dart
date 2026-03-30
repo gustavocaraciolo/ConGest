@@ -6,12 +6,9 @@ class AuthService {
   static const String _baseUrl = 'https://www2.siaf.co.ao/token';
 
   static const String _basicAuth =
-      'Basic bmpVSUR5TE9NZmhHT0RwUWJGb3VPenp3TnZVYTp6UmdWa0xQN0tON0NLd2VzRFo4RjlMaVExb2th';
+      'Basic hash-de-base64-de-client_id-e-client_secret';
 
-  static const String _scope =
-      'openid ps_crud pa_read pa_write ps_read ps_write '
-      'pes_read pes_write em_read em_gravar fp_read fp_write '
-      'as_read as_write fc_read fc_write rel_visualizar';
+  static const String _scope = 'scopes values-separados-por-espaço';
 
   static Future<AuthResult> login(String username, String password) async {
     try {
