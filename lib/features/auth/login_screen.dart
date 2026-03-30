@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../app/theme/app_colors.dart';
@@ -8,6 +10,7 @@ import '../home/home_screen.dart';
 import '../home/home_gestor_screen.dart';
 import 'create_account_screen.dart';
 import 'forgot_password_screen.dart';
+import 'package:congest/services/auth_service.dart';
 
 enum UserType { morador, gestor }
 
@@ -24,12 +27,63 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool _isLoading = false;
   UserType _selectedUserType = UserType.morador;
+  String? _errorMessage;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    final username = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      setState(() => _errorMessage = 'Preencha email e palavra-passe.');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final result = await AuthService.login(username, password);
+
+    if (!mounted) return;
+
+    setState(() => _isLoading = false);
+
+    if (result.success) {
+      _handleSignIn();
+    } else {
+      setState(() => _errorMessage = result.errorMessage);
+    }
+  }
+
+  void _handleSignIn() async {
+    setState(() => _isLoading = true);
+
+    // Simular delay de autenticação
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    if (_selectedUserType == UserType.gestor) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeGestorScreen()),
+        (route) => false,
+      );
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        (route) => false,
+      );
+    }
   }
 
   @override
@@ -97,7 +151,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: _selectedUserType == UserType.morador
                                         ? AppColors.primary
@@ -110,7 +166,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: _selectedUserType == UserType.morador
+                                      color:
+                                          _selectedUserType == UserType.morador
                                           ? AppColors.white
                                           : AppColors.textSecondary,
                                     ),
@@ -126,7 +183,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: _selectedUserType == UserType.gestor
                                         ? AppColors.primary
@@ -139,7 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: _selectedUserType == UserType.gestor
+                                      color:
+                                          _selectedUserType == UserType.gestor
                                           ? AppColors.white
                                           : AppColors.textSecondary,
                                     ),
@@ -187,10 +247,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     obscureText: _obscurePassword,
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
-                                      contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 14,
-                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 14,
+                                          ),
                                       hintText: '',
                                       hintStyle: GoogleFonts.inter(
                                         fontSize: 14,
@@ -248,12 +309,39 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 12),
+                      if (_errorMessage != null) ...[
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          margin: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.red.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _errorMessage!,
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                       // Sign In button
                       PrimaryButton(
                         label: 'Entrar',
                         isLoading: _isLoading,
-                        onPressed: _handleSignIn,
+                        onPressed: _login,
                       ),
                       const SizedBox(height: 20),
                       // Sign up link
@@ -315,28 +403,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  void _handleSignIn() async {
-    setState(() => _isLoading = true);
-
-    // Simular delay de autenticação
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-
-    if (_selectedUserType == UserType.gestor) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeGestorScreen()),
-        (route) => false,
-      );
-    } else {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-        (route) => false,
-      );
-    }
   }
 }
