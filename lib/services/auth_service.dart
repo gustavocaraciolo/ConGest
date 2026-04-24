@@ -48,13 +48,11 @@ class AuthService {
 
         return AuthResult.success(token);
       } else {
-        final data = jsonDecode(response.body);
-        final error =
-            data['error_description'] ?? data['error'] ?? 'Erro desconhecido';
+        final error = 'Email ou Palavra-passe inválidos.';
         return AuthResult.failure(error.toString());
       }
     } catch (e) {
-      return AuthResult.failure('Erro de ligação: $e');
+      return AuthResult.failure('Erro de ligação. Por favor, tente novamente.');
     }
   }
 
