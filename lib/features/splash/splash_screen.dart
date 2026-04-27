@@ -1,5 +1,8 @@
 import 'dart:math' as math;
+import 'package:congest/features/home/home_gestor_screen.dart';
+import 'package:congest/features/home/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:congest/services/auth_service.dart';
 import '../../app/theme/app_colors.dart';
 import '../../shared/widgets/congest_logo.dart';
 import '../auth/login_screen.dart';
@@ -14,6 +17,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  final UserType _selectedUserType = UserType.morador;
 
   @override
   void initState() {
@@ -26,12 +30,35 @@ class _SplashScreenState extends State<SplashScreen>
     _navigateToLogin();
   }
 
+  Future<void> _checkAuth() async {
+    final loggedIn = await AuthService.isLoggedIn();
+    if (!mounted) return;
+    if (loggedIn && _selectedUserType == UserType.gestor) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeGestorScreen()),
+        (route) => false,
+      );
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        (route) => false,
+      );
+    }
+  }
+
   Future<void> _navigateToLogin() async {
+    final loggedIn = await AuthService.isLoggedIn();
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
+      if (loggedIn) {
+        _checkAuth();
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
     }
   }
 
@@ -47,9 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          color: AppColors.primary,
-        ),
+        decoration: const BoxDecoration(color: AppColors.primary),
         child: Stack(
           children: [
             // Gradiente radial
@@ -126,9 +151,7 @@ class _ConicGradientSpinner extends StatelessWidget {
     return SizedBox(
       width: 40,
       height: 40,
-      child: CustomPaint(
-        painter: _ConicGradientPainter(),
-      ),
+      child: CustomPaint(painter: _ConicGradientPainter()),
     );
   }
 }

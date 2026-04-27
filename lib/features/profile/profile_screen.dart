@@ -13,6 +13,7 @@ import 'widgets/profile_header.dart';
 import 'widgets/settings_card.dart';
 import 'widgets/settings_item.dart';
 import 'widgets/logout_popup.dart';
+import 'package:congest/services/auth_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -35,7 +36,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SafeArea(
               bottom: false,
               child: ProfileHeader(
-                imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
               ),
             ),
             const SizedBox(height: 8),
@@ -49,9 +51,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       SettingsItem(
                         leadingWidget: const UserIcon(),
                         label: 'Informações da Conta',
-                        onTap: () => _navigateTo(const EditProfileScreen(
-                          imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
-                        )),
+                        onTap: () => _navigateTo(
+                          const EditProfileScreen(
+                            imageUrl:
+                                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
+                          ),
+                        ),
                       ),
                       SettingsItem(
                         leadingWidget: const NotificationIcon(),
@@ -145,7 +150,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: 'Controlo de Conta',
                     items: [
                       SettingsItem(
-                        leadingWidget: const LogoutIcon(color: AppColors.danger),
+                        leadingWidget: const LogoutIcon(
+                          color: AppColors.danger,
+                        ),
                         label: 'Terminar Sessão',
                         iconColor: AppColors.danger,
                         textColor: AppColors.danger,
@@ -165,15 +172,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _navigateTo(Widget screen) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => screen),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
   }
 
   Future<void> _handleLogout() async {
     final shouldLogout = await LogoutPopup.show(context);
     if (shouldLogout == true && mounted) {
+      AuthService.logout();
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),

@@ -37,6 +37,9 @@ dependencies:
   intl: ^0.20.2
   flutter_svg: ^2.0.10
   pdfx: ^2.8.0
+  http: ^1.2.2
+  shared_preferences: ^2.3.2
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +66,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/extracto_cc_2461.pdf
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
