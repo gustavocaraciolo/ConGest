@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/env_config.dart';
 
 class AuthService {
-  static const String _baseUrl = 'https://www2.siaf.co.ao/token';
-
-  static const String _basicAuth =
-      'Basic hash-de-base64-de-client_id-e-client_secret';
-
-  static const String _scope = 'scopes values-separados-por-espaço';
+  static String get _baseUrl => EnvConfig.authBaseUrl;
+  static String get _basicAuth => EnvConfig.authBasicToken;
+  static String get _scope => EnvConfig.authScope;
 
   static Future<AuthResult> login(String username, String password) async {
     try {
@@ -19,8 +17,8 @@ class AuthService {
           'Authorization': _basicAuth,
           'Accept': 'application/json, text/plain, */*',
           'Accept-Language': 'pt',
-          'Origin': 'https://www1.siaf.co.ao',
-          'Referer': 'https://www1.siaf.co.ao/',
+          'Origin': EnvConfig.originUrl,
+          'Referer': EnvConfig.refererUrl,
         },
         body: {
           'grant_type': 'password',

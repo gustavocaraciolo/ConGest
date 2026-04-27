@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'auth_service.dart';
+import 'package:congest/config/env_config.dart';
 
 class ProfileService {
-  static const String baseUrl = 'https://www2.siaf.co.ao';
+  static String get baseUrl => EnvConfig.apiBaseUrl;
 
   static Future<Profile?> getProfile() async {
     try {
